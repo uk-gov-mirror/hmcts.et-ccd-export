@@ -37,13 +37,13 @@ The application must be configured to use the same redis details as the API serv
 
 ## Running
 
-First, clone this repository into et_ccd_export
+First, clone this repository into et-ccd-export
 
 Then
 
 ```
 
-cd et_ccd_export
+cd et-ccd-export
 
 ./bin/setup
 
