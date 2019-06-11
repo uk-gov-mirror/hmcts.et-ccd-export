@@ -1,0 +1,11 @@
+---
+:concurrency: 5
+:verbose: true
+:require: ./application.rb
+staging:
+  :concurrency: 10
+production:
+  :concurrency: <%= ENV.fetch('RAILS_MAX_THREADS', '20').to_i - 2  %>
+:queues:
+  - external_system_ccd
+  - sidekiq_alive
