@@ -16,3 +16,6 @@ gem 'azure_env_secrets', git: 'https://github.com/ministryofjustice/azure_env_se
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 
+group :test do
+  gem 'rspec', '~> 3.8'
+end
