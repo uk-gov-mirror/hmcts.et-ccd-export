@@ -30,5 +30,8 @@ FactoryBot.define do
       end_date { (Date.today + 10).strftime('%Y-%m-%d') }
     end
 
+    trait :blank do
+
+    end
   end
 end
