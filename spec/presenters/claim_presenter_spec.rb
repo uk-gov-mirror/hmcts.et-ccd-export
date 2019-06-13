@@ -354,20 +354,6 @@ RSpec.describe EtCcdExport::ClaimPresenter do
       it { is_expected.to present_ccd_field('claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address_telephone_number: nil }).with_result(nil) }
     end
 
-
-    context 'respondentCollection[0].value.respondent_name' do
-      it { is_expected.to present_ccd_field('respondentCollection[0].value.respondent_name').using(:claim, number_of_respondents: 2, secondary_respondent_attrs: { name: 'Name 1' }).with_result('Name 1') }
-    end
-
-
-
-
-
-
-
-
-
-
     context 'respondentCollection[0].value.respondent_name' do
       it { is_expected.to present_ccd_field('respondentCollection[0].value.respondent_name').using(:claim, number_of_respondents: 2, secondary_respondent_attrs: { name: 'Name 1' }).with_result('Name 1') }
       it { is_expected.to present_ccd_field('respondentCollection[0].value.respondent_name').using(:claim, number_of_respondents: 2, secondary_respondent_attrs: { name: 'Name 2' }).with_result('Name 2') }
@@ -431,7 +417,35 @@ RSpec.describe EtCcdExport::ClaimPresenter do
       it { is_expected.to_not present_ccd_field('respondentCollection[0].value.respondent_ACAS_no').using(:claim, number_of_respondents: 2, secondary_respondent_attrs: { acas_certificate_number: 'Some number' }) }
     end
     
-    
+    context 'claimantOtherType.claimant_employed_currently' do
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_currently').using(:claim).with_result('Yes') }
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_currently').using(:claim, employment_details_traits: [:no_longer_employed]).with_result('No') }
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_currently').using(:claim, employment_details_traits: [:working_notice_period]).with_result('Yes') }
+    end
+
+    context 'claimantOtherType.claimant_occupation' do
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_occupation').using(:claim, employment_details_attrs: { job_title: 'Bottle Washer' }).with_result('Bottle Washer') }
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_occupation').using(:claim, employment_details_attrs: { job_title: 'Project Manager' }).with_result('Project Manager') }
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_occupation').using(:claim, employment_details_attrs: { job_title: nil }).with_result(nil) }
+    end
+
+    context 'claimantOtherType.claimant_employed_from' do
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_from').using(:claim, employment_details_attrs: { start_date: '2012-11-21' }).with_result('2012-11-21') }
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_from').using(:claim, employment_details_attrs: { start_date: '2012-10-22' }).with_result('2012-10-22') }
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_from').using(:claim, employment_details_attrs: { start_date: nil }).with_result(nil) }
+    end
+
+    context 'claimantOtherType.claimant_employed_notice_period' do
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_notice_period').using(:claim, employment_details_attrs: { notice_period_end_date: '2012-09-11' }).with_result('2012-09-11') }
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_notice_period').using(:claim, employment_details_attrs: { notice_period_end_date: '2012-09-12' }).with_result('2012-09-12') }
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_notice_period').using(:claim, employment_details_attrs: { notice_period_end_date: nil }).with_result(nil) }
+    end
+
+    context 'claimantOtherType.claimant_employed_to' do
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_to').using(:claim, employment_details_attrs: { end_date: '2015-08-05' }).with_result('2015-08-05') }
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_to').using(:claim, employment_details_attrs: { end_date: '2015-08-13' }).with_result('2015-08-13') }
+      it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_to').using(:claim, employment_details_attrs: { end_date: nil }).with_result(nil) }
+    end
     
     
     

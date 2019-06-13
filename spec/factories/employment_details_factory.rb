@@ -19,5 +19,16 @@ FactoryBot.define do
       average_hours_worked_per_week { 38.0 }
       worked_notice_period_or_paid_in_lieu { nil }
     end
+
+    trait :no_longer_employed do
+      employed
+      end_date { '2011-11-18' }
+    end
+
+    trait :working_notice_period do
+      employed
+      end_date { (Date.today + 10).strftime('%Y-%m-%d') }
+    end
+
   end
 end

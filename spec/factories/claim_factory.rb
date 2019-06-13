@@ -143,6 +143,7 @@ FactoryBot.define do
       primary_representative_traits { [:full] }
       primary_representative_attrs { {} }
       employment_details_traits { [:employed] }
+      employment_details_attrs { {} }
     end
 
 
@@ -185,7 +186,6 @@ FactoryBot.define do
       disability_information { "Lorem ipsum disability" }
       acas_certificate_number { "AC123456/78/90" }
       acas_exemption_code { nil }
-      employment_details { build(:employment_details, *employment_details_traits) }
     end
 
     secondary_claimants { [] }
@@ -199,6 +199,7 @@ FactoryBot.define do
       claim.secondary_respondents.concat build_list(:respondent, evaluator.number_of_respondents - 1, *evaluator.secondary_respondent_traits, **evaluator.secondary_respondent_attrs) unless evaluator.number_of_respondents < 1
       claim.claimant_count = evaluator.number_of_claimants
       claim.primary_representative = build(:representative, *evaluator.primary_representative_traits, **evaluator.primary_representative_attrs) unless evaluator.primary_representative_traits.nil?
+      claim.employment_details = build(:employment_details, *evaluator.employment_details_traits, **evaluator.employment_details_attrs)
     end
 
     trait :with_pdf_file do

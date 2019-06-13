@@ -24,6 +24,13 @@ json.set! "data" do
   json.set! "claimantOtherType" do
     json.set! "claimant_disabled", claim.dig('primary_claimant', 'special_needs').present? ? 'Yes' : 'No'
     json.set! "claimant_disabled_details", "My special needs"
+    json.set! "claimant_employed_currently", "Yes" if claim.dig('employment_details', 'start_date').present? && claim.dig('employment_details', 'end_date').nil?
+    json.set! "claimant_employed_currently", "No" if claim.dig('employment_details', 'end_date').present? && Date.parse(claim.dig('employment_details', 'end_date')) < Date.today
+    json.set! "claimant_employed_currently", "Yes" if claim.dig('employment_details', 'end_date').present? && Date.parse(claim.dig('employment_details', 'end_date')) >= Date.today
+    json.set! "claimant_occupation", claim.dig('employment_details', 'job_title')
+    json.set! "claimant_employed_from", claim.dig('employment_details', 'start_date')
+    json.set! "claimant_employed_to", claim.dig('employment_details', 'end_date')
+    json.set! "claimant_employed_notice_period", claim.dig('employment_details', 'notice_period_end_date')
   end
   if claim.dig('primary_representative').present?
     json.set! "representativeClaimantType" do
