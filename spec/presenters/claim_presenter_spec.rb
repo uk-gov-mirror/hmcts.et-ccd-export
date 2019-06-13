@@ -157,19 +157,199 @@ RSpec.describe EtCcdExport::ClaimPresenter do
       it { is_expected.to present_ccd_field('claimantType.claimant_contact_preference').using(:claim, primary_claimant_attrs: { contact_preference: nil }).with_result(nil) }
     end
 
+    context 'representativeClaimantType.representative_occupation' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_occupation').using(:claim, primary_representative_attrs: { representative_type: 'Solicitor' } ).with_result('Solicitor') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_occupation').using(:claim, primary_representative_attrs: { representative_type: 'CAB' } ).with_result('CAB') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_occupation').using(:claim, primary_representative_attrs: { representative_type: nil } ).with_result(nil) }
+    end
 
+    context 'claimantRepresentedQuestion' do
+      it { is_expected.to present_ccd_field('claimantRepresentedQuestion').using(:claim).with_result('Yes') }
+      it { is_expected.to present_ccd_field('claimantRepresentedQuestion').using(:claim, :no_representative).with_result('No') }
+    end
 
+    context 'representativeClaimantType' do
+      it { is_expected.to_not present_ccd_field('representativeClaimantType.name_of_organisation').using(:claim, :no_representative) }
+    end
 
+    context 'representativeClaimantType.name_of_organisation' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.name_of_organisation').using(:claim, primary_representative_attrs: { organisation_name: 'Example org 1' }).with_result('Example org 1') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.name_of_organisation').using(:claim, primary_representative_attrs: { organisation_name: 'Example org 2' }).with_result('Example org 2') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.name_of_organisation').using(:claim, primary_representative_attrs: { organisation_name: nil }).with_result(nil) }
+    end
+    
+    context 'representativeClaimantType.name_of_representative' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.name_of_representative').using(:claim, primary_representative_attrs: { name: 'Name 1' }).with_result('Name 1') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.name_of_representative').using(:claim, primary_representative_attrs: { name: 'Name 2' }).with_result('Name 2') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.name_of_representative').using(:claim, primary_representative_attrs: { name: nil }).with_result(nil) }
+    end
 
+    context 'representativeClaimantType.representative_address.AddressLine1' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.AddressLine1').using(:claim, primary_representative_attrs: { address: build(:address, building: 'Building 1') }).with_result('Building 1') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.AddressLine1').using(:claim, primary_representative_attrs: { address: build(:address, building: 'Building 2') }).with_result('Building 2') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.AddressLine1').using(:claim, primary_representative_attrs: { address: build(:address, building: nil) }).with_result(nil) }
+    end
+    
+    context 'representativeClaimantType.representative_address.AddressLine2' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.AddressLine2').using(:claim, primary_representative_attrs: { address: build(:address, street: 'Street 1') }).with_result('Street 1') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.AddressLine2').using(:claim, primary_representative_attrs: { address: build(:address, street: 'Street 2') }).with_result('Street 2') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.AddressLine2').using(:claim, primary_representative_attrs: { address: build(:address, street: nil) }).with_result(nil) }
+    end
+    
+    context 'representativeClaimantType.representative_address.PostTown' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.PostTown').using(:claim, primary_representative_attrs: { address: build(:address, locality: 'Town 1') }).with_result('Town 1') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.PostTown').using(:claim, primary_representative_attrs: { address: build(:address, locality: 'Town 2') }).with_result('Town 2') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.PostTown').using(:claim, primary_representative_attrs: { address: build(:address, locality: nil) }).with_result(nil) }
+    end
+    
+    context 'representativeClaimantType.representative_address.County' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.County').using(:claim, primary_representative_attrs: { address: build(:address, county: 'County 1') }).with_result('County 1') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.County').using(:claim, primary_representative_attrs: { address: build(:address, county: 'County 2') }).with_result('County 2') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.County').using(:claim, primary_representative_attrs: { address: build(:address, county: nil) }).with_result(nil) }
+    end
 
+    context 'representativeClaimantType.representative_address.PostCode' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.PostCode').using(:claim, primary_representative_attrs: { address: build(:address, post_code: 'Post code 1') }).with_result('Post code 1') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.PostCode').using(:claim, primary_representative_attrs: { address: build(:address, post_code: 'Post code 2') }).with_result('Post code 2') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_address.PostCode').using(:claim, primary_representative_attrs: { address: build(:address, post_code: nil) }).with_result(nil) }
+    end
+    
+    context 'representativeClaimantType.representative_phone_number' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_phone_number').using(:claim, primary_representative_attrs: { address_telephone_number: 'Phone 1' }).with_result('Phone 1') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_phone_number').using(:claim, primary_representative_attrs: { address_telephone_number: 'Phone 2' }).with_result('Phone 2') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_phone_number').using(:claim, primary_representative_attrs: { address_telephone_number: nil }).with_result(nil) }
+    end
 
+    context 'representativeClaimantType.representative_mobile_number' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_mobile_number').using(:claim, primary_representative_attrs: { mobile_number: 'Phone 1' }).with_result('Phone 1') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_mobile_number').using(:claim, primary_representative_attrs: { mobile_number: 'Phone 2' }).with_result('Phone 2') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_mobile_number').using(:claim, primary_representative_attrs: { mobile_number: nil }).with_result(nil) }
+    end
 
+    context 'representativeClaimantType.representative_email_address' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_email_address').using(:claim, primary_representative_attrs: { email_address: 'rep@company1.com' }).with_result('rep@company1.com') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_email_address').using(:claim, primary_representative_attrs: { email_address: 'rep@company2.com' }).with_result('rep@company2.com') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_email_address').using(:claim, primary_representative_attrs: { email_address: nil }).with_result(nil) }
+    end
 
+    context 'representativeClaimantType.representative_dx' do
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_dx').using(:claim, primary_representative_attrs: { dx_number: 'Dx number 1' }).with_result('Dx number 1') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_dx').using(:claim, primary_representative_attrs: { dx_number: 'Dx number 2' }).with_result('Dx number 2') }
+      it { is_expected.to present_ccd_field('representativeClaimantType.representative_dx').using(:claim, primary_representative_attrs: { dx_number: nil }).with_result(nil) }
+    end
 
+    context 'respondentSumType.respondent_name' do
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_name').using(:claim, primary_respondent_attrs: { name: 'Name 1' }).with_result('Name 1') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_name').using(:claim, primary_respondent_attrs: { name: 'Name 2' }).with_result('Name 2') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_name').using(:claim, primary_respondent_attrs: { name: nil }).with_result(nil) }
+    end
 
+    context 'respondentSumType.respondent_address.AddressLine1' do
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.AddressLine1').using(:claim, primary_respondent_attrs: { address: build(:address, building: 'Building 1') }).with_result('Building 1') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.AddressLine1').using(:claim, primary_respondent_attrs: { address: build(:address, building: 'Building 2') }).with_result('Building 2') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.AddressLine1').using(:claim, primary_respondent_attrs: { address: build(:address, building: nil) }).with_result(nil) }
+    end
 
+    context 'respondentSumType.respondent_address.AddressLine2' do
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.AddressLine2').using(:claim, primary_respondent_attrs: { address: build(:address, street: 'Street 1') }).with_result('Street 1') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.AddressLine2').using(:claim, primary_respondent_attrs: { address: build(:address, street: 'Street 2') }).with_result('Street 2') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.AddressLine2').using(:claim, primary_respondent_attrs: { address: build(:address, street: nil) }).with_result(nil) }
+    end
 
+    context 'respondentSumType.respondent_address.PostTown' do
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.PostTown').using(:claim, primary_respondent_attrs: { address: build(:address, locality: 'Town 1') }).with_result('Town 1') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.PostTown').using(:claim, primary_respondent_attrs: { address: build(:address, locality: 'Town 2') }).with_result('Town 2') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.PostTown').using(:claim, primary_respondent_attrs: { address: build(:address, locality: nil) }).with_result(nil) }
+    end
 
+    context 'respondentSumType.respondent_address.County' do
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.County').using(:claim, primary_respondent_attrs: { address: build(:address, county: 'County 1') }).with_result('County 1') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.County').using(:claim, primary_respondent_attrs: { address: build(:address, county: 'County 2') }).with_result('County 2') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.County').using(:claim, primary_respondent_attrs: { address: build(:address, county: nil) }).with_result(nil) }
+    end
 
+    context 'respondentSumType.respondent_address.PostCode' do
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.PostCode').using(:claim, primary_respondent_attrs: { address: build(:address, post_code: 'Postcode 1') }).with_result('Postcode 1') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.PostCode').using(:claim, primary_respondent_attrs: { address: build(:address, post_code: 'Postcode 2') }).with_result('Postcode 2') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_address.PostCode').using(:claim, primary_respondent_attrs: { address: build(:address, post_code: nil) }).with_result(nil) }
+    end
+
+    context 'respondentSumType.respondent_phone1' do
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_phone1').using(:claim, primary_respondent_attrs: { address_telephone_number: 'Number 1' }).with_result('Number 1') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_phone1').using(:claim, primary_respondent_attrs: { address_telephone_number: 'Number 2' }).with_result('Number 2') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_phone1').using(:claim, primary_respondent_attrs: { address_telephone_number: nil }).with_result(nil) }
+    end
+
+    context 'claimantWorkAddress.claimant_work_address.AddressLine1' do
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine1').using(:claim, primary_respondent_attrs: { work_address: build(:address, building: 'Building 1') }).with_result('Building 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine1').using(:claim, primary_respondent_attrs: { work_address: build(:address, building: 'Building 2') }).with_result('Building 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine1').using(:claim, primary_respondent_attrs: { work_address: build(:address, building: nil) }).with_result(nil) }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine1').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, building: 'Building 1') }).with_result('Building 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine1').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, building: 'Building 2') }).with_result('Building 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine1').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, building: nil) }).with_result(nil) }
+    end
+
+    context 'claimantWorkAddress.claimant_work_address.AddressLine2' do
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine2').using(:claim, primary_respondent_attrs: { work_address: build(:address, street: 'Street 1') }).with_result('Street 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine2').using(:claim, primary_respondent_attrs: { work_address: build(:address, street: 'Street 2') }).with_result('Street 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine2').using(:claim, primary_respondent_attrs: { work_address: build(:address, street: nil) }).with_result(nil) }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine2').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, street: 'Street 1') }).with_result('Street 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine2').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, street: 'Street 2') }).with_result('Street 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.AddressLine2').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, street: nil) }).with_result(nil) }
+    end
+
+    context 'claimantWorkAddress.claimant_work_address.PostTown' do
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostTown').using(:claim, primary_respondent_attrs: { work_address: build(:address, locality: 'Town 1') }).with_result('Town 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostTown').using(:claim, primary_respondent_attrs: { work_address: build(:address, locality: 'Town 2') }).with_result('Town 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostTown').using(:claim, primary_respondent_attrs: { work_address: build(:address, locality: nil) }).with_result(nil) }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostTown').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, locality: 'Town 1') }).with_result('Town 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostTown').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, locality: 'Town 2') }).with_result('Town 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostTown').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, locality: nil) }).with_result(nil) }
+    end
+
+    context 'claimantWorkAddress.claimant_work_address.County' do
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.County').using(:claim, primary_respondent_attrs: { work_address: build(:address, county: 'County 1') }).with_result('County 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.County').using(:claim, primary_respondent_attrs: { work_address: build(:address, county: 'County 2') }).with_result('County 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.County').using(:claim, primary_respondent_attrs: { work_address: build(:address, county: nil) }).with_result(nil) }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.County').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, county: 'County 1') }).with_result('County 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.County').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, county: 'County 2') }).with_result('County 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.County').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, county: nil) }).with_result(nil) }
+    end
+
+    context 'claimantWorkAddress.claimant_work_address.PostCode' do
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: build(:address, post_code: 'Postcode 1') }).with_result('Postcode 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: build(:address, post_code: 'Postcode 2') }).with_result('Postcode 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: build(:address, post_code: nil) }).with_result(nil) }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, building: 'Postcode 1') }).with_result('Postcode 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, building: 'Postcode 2') }).with_result('Postcode 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, building: nil) }).with_result(nil) }
+    end
+
+    context 'claimant_work_phone_number' do
+      it { is_expected.to present_ccd_field('claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address_telephone_number: 'Number 1' }).with_result('Number 1') }
+      it { is_expected.to present_ccd_field('claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address_telephone_number: 'Number 2' }).with_result('Number 2') }
+      it { is_expected.to present_ccd_field('claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address_telephone_number: nil }).with_result(nil) }
+    end
+
+    context 'respondentSumType.respondent_ACAS' do
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS').using(:claim, primary_respondent_attrs: { acas_certificate_number: 'Cert 1' }).with_result('Cert 1') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS').using(:claim, primary_respondent_attrs: { acas_certificate_number: 'Cert 2' }).with_result('Cert 2') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS').using(:claim, primary_respondent_attrs: { acas_certificate_number: nil }).with_result(nil) }
+    end
+
+    context 'respondentSumType.respondent_ACAS_question' do
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS_question').using(:claim).with_result('Yes') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS_question').using(:claim, primary_respondent_attrs: { acas_certificate_number: '' }).with_result('No') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS_question').using(:claim, primary_respondent_attrs: { acas_certificate_number: nil }).with_result('No') }
+    end
+
+    context 'respondentSumType.respondent_ACAS_no' do
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS_no').using(:claim, primary_respondent_attrs: { acas_certificate_number: nil, acas_exemption_code: 'joint_claimant_has_acas_number' }).with_result('Another person') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS_no').using(:claim, primary_respondent_attrs: { acas_certificate_number: nil, acas_exemption_code: 'acas_has_no_jurisdiction' }).with_result('No Power') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS_no').using(:claim, primary_respondent_attrs: { acas_certificate_number: nil, acas_exemption_code: 'employer_contacted_acas' }).with_result('Employer already in touch') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS_no').using(:claim, primary_respondent_attrs: { acas_certificate_number: nil, acas_exemption_code: 'interim_relief' }).with_result('Unfair Dismissal') }
+      it { is_expected.to present_ccd_field('respondentSumType.respondent_ACAS_no').using(:claim, primary_respondent_attrs: { acas_certificate_number: nil, acas_exemption_code: nil }).with_result(nil) }
+      it { is_expected.to_not present_ccd_field('respondentSumType.respondent_ACAS_no').using(:claim, primary_respondent_attrs: { acas_certificate_number: 'Some number' }) }
+    end
   end
 end
