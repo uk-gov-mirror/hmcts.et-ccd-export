@@ -139,6 +139,7 @@ FactoryBot.define do
       primary_claimant_traits { [:default] }
       secondary_claimant_traits { [:mr_first_last] }
       secondary_respondent_traits { [:full] }
+      secondary_respondent_attrs { {} }
       primary_representative_traits { [:full] }
       primary_representative_attrs { {} }
       employment_details_traits { [:employed] }
@@ -193,9 +194,9 @@ FactoryBot.define do
 
     after(:build) do |claim, evaluator|
       claim.primary_claimant = build(:claimant, *evaluator.primary_claimant_traits, **evaluator.primary_claimant_attrs) if claim.primary_claimant.blank? && evaluator.number_of_claimants > 0
-      claim.secondary_claimants << build_list(:claimant, evaluator.number_of_claimants - 1, *evaluator.secondary_claimant_traits) unless evaluator.number_of_claimants < 1
+      claim.secondary_claimants.concat build_list(:claimant, evaluator.number_of_claimants - 1, *evaluator.secondary_claimant_traits) unless evaluator.number_of_claimants < 1
       claim.primary_respondent = build(:respondent, *evaluator.primary_respondent_traits, **evaluator.primary_respondent_attrs) if claim.primary_respondent.blank? && evaluator.number_of_respondents > 0
-      claim.secondary_respondents << build_list(:respondent, evaluator.number_of_respondents - 1, *evaluator.secondary_respondent_traits) unless evaluator.number_of_respondents < 1
+      claim.secondary_respondents.concat build_list(:respondent, evaluator.number_of_respondents - 1, *evaluator.secondary_respondent_traits, **evaluator.secondary_respondent_attrs) unless evaluator.number_of_respondents < 1
       claim.claimant_count = evaluator.number_of_claimants
       claim.primary_representative = build(:representative, *evaluator.primary_representative_traits, **evaluator.primary_representative_attrs) unless evaluator.primary_representative_traits.nil?
     end

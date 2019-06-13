@@ -24,4 +24,5 @@ gem 'jbuilder', '~> 2.9', '>= 2.9.1'
 group :test do
   gem 'rspec', '~> 3.8'
   gem 'factory_bot', '~> 5.0', '>= 5.0.2'
+  gem 'jsonpath', '~> 0.5.8'
 end

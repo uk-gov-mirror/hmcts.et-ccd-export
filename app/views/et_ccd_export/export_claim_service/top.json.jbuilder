@@ -69,6 +69,24 @@ json.set! "data" do
       json.set! "PostCode", claim.dig('primary_respondent', 'work_address', 'post_code')
     end
   end
+  json.set! "respondentCollection" do
+    json.array!(claim.dig('secondary_respondents')) do |respondent|
+      json.set! "value" do
+        json.set! "respondent_name", respondent.dig('name')
+        json.set! "respondent_address" do
+          json.set! "AddressLine1", respondent.dig('address', 'building')
+          json.set! "AddressLine2", respondent.dig('address', 'street')
+          json.set! "PostTown", respondent.dig('address', 'locality')
+          json.set! "County", respondent.dig('address', 'county')
+          json.set! "PostCode", respondent.dig('address', 'post_code')
+        end
+        json.set! "respondent_phone1", respondent.dig('address_telephone_number')
+        json.set! "respondent_ACAS", respondent.dig('acas_certificate_number')
+        json.set! "respondent_ACAS_question", respondent.dig('acas_certificate_number').present? ? 'Yes' : 'No'
+        json.set! "respondent_ACAS_no", respondent.dig('acas_exemption_code') unless claim.dig('acas_certificate_number').present?
+      end
+    end
+  end
   json.set! "claimant_work_phone_number", claim.dig('primary_respondent', 'work_address_telephone_number')
 end
 json.set! "event" do
