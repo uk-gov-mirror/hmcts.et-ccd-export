@@ -2,6 +2,7 @@ require 'spec_helper'
 require_relative '../../../app/services/et_ccd_export/export_claim_service'
 RSpec.describe EtCcdExport::ExportClaimService do
   subject(:service) { described_class.new }
+
   shared_context 'with stubbed ccd' do
     before do
       stub_request(:any, Addressable::Template.new(export.external_system.config[:idam_service_token_exchange_url])).to_rack(EtFakeCcd::Idam::ServiceTokenServer)
@@ -12,7 +13,7 @@ RSpec.describe EtCcdExport::ExportClaimService do
   end
   describe '#call' do
     let(:export) { create(:export, :for_claim) }
-    #include_context 'with stubbed ccd'
+    # include_context 'with stubbed ccd'
 
     it 'requests a token as it doesnt have one' do
       service.call(export)

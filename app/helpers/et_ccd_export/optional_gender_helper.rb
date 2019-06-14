@@ -6,6 +6,7 @@ module EtCcdExport
     # @return [String, Nil] If nil was passed in, nil is returned - else the correct value for gender
     def optional_gender(gender)
       return gender if [nil, 'Male', 'Female', 'N/K'].include?(gender)
+
       nil
     end
   end
