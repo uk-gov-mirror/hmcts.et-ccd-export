@@ -14,7 +14,7 @@ json.set! "data" do
       json.set! "PostTown", claim.dig('primary_claimant', 'address', 'locality')
       json.set! "County", claim.dig('primary_claimant', 'address', 'county')
       json.set! "PostCode", claim.dig('primary_claimant', 'address', 'post_code')
-      json.set! "Country", claim.dig('primary_claimant', 'address', 'country')
+      json.set! "Country", optional_claimant_country(claim.dig('primary_claimant', 'address', 'country'))
     end
     json.set! "claimant_phone_number", claim.dig('primary_claimant', 'address_telephone_number')
     json.set! "claimant_mobile_number", claim.dig('primary_claimant', 'mobile_number')
@@ -23,7 +23,7 @@ json.set! "data" do
   end
   json.set! "claimantOtherType" do
     json.set! "claimant_disabled", claim.dig('primary_claimant', 'special_needs').present? ? 'Yes' : 'No'
-    json.set! "claimant_disabled_details", "My special needs"
+    json.set! "claimant_disabled_details", claim.dig('primary_claimant', 'special_needs') if claim.dig('primary_claimant', 'special_needs').present?
     json.set! "claimant_employed_currently", "Yes" if claim.dig('employment_details').present? && claim.dig('employment_details', 'start_date').present? && claim.dig('employment_details', 'end_date').nil?
     json.set! "claimant_employed_currently", "No" if claim.dig('employment_details').present? && claim.dig('employment_details', 'end_date').present? && Date.parse(claim.dig('employment_details', 'end_date')) < Date.today
     json.set! "claimant_employed_currently", "Yes" if claim.dig('employment_details').present? && claim.dig('employment_details', 'end_date').present? && Date.parse(claim.dig('employment_details', 'end_date')) >= Date.today
@@ -65,7 +65,7 @@ json.set! "data" do
     json.set! "respondent_phone1", claim.dig('primary_respondent', 'address_telephone_number')
     json.set! "respondent_ACAS", claim.dig('primary_respondent', 'acas_certificate_number')
     json.set! "respondent_ACAS_question", claim.dig('primary_respondent', 'acas_certificate_number').present? ? 'Yes' : 'No'
-    json.set! "respondent_ACAS_no", claim.dig('primary_respondent', 'acas_exemption_code') unless claim.dig('primary_respondent', 'acas_certificate_number').present?
+    json.set! "respondent_ACAS_no", optional_acas_exemption(claim.dig('primary_respondent', 'acas_exemption_code')) unless claim.dig('primary_respondent', 'acas_certificate_number').present?
   end
   json.set! "claimantWorkAddress" do
     json.set! "claimant_work_address" do
@@ -98,7 +98,7 @@ json.set! "data" do
         json.set! "respondent_phone1", respondent.dig('address_telephone_number')
         json.set! "respondent_ACAS", respondent.dig('acas_certificate_number')
         json.set! "respondent_ACAS_question", respondent.dig('acas_certificate_number').present? ? 'Yes' : 'No'
-        json.set! "respondent_ACAS_no", respondent.dig('acas_exemption_code') unless claim.dig('acas_certificate_number').present?
+        json.set! "respondent_ACAS_no", optional_acas_exemption(respondent.dig('acas_exemption_code')) unless respondent.dig('acas_certificate_number').present?
       end
     end
   end
