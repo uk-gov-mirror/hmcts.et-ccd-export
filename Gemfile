@@ -26,3 +26,8 @@ group :test do
   gem 'factory_bot', '~> 5.0', '>= 5.0.2'
   gem 'jsonpath', '~> 0.5.8'
 end
+
+group :develop do
+  gem 'rubocop', '~> 0.71.0'
+  gem 'rubocop-rspec', '~> 1.33'
+end

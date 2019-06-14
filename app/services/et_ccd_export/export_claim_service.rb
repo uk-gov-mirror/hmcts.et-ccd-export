@@ -29,13 +29,14 @@ module EtCcdExport
 
     def exchange_service_token_for(export)
       url = export.external_system.config[:idam_service_token_exchange_url]
-      resp = RestClient.post(url, {microservice: "ccd_gw"}.to_json, content_type: 'application/json')
+      resp = RestClient.post(url, { microservice: "ccd_gw" }.to_json, content_type: 'application/json')
       resp.body
     end
 
-    def exchange_user_token_for(export) config = export.external_system.config
+    def exchange_user_token_for(export)
+      config = export.external_system.config
       url = config[:idam_user_token_exchange_url]
-      resp = RestClient.post(url, {id: config[:user_id], role: config[:user_role]})
+      resp = RestClient.post(url, id: config[:user_id], role: config[:user_role])
       resp.body
     end
 

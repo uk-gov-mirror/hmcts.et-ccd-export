@@ -46,7 +46,7 @@ module EtCcdExport
 
     def _render_partial_with_options(options)
       options.reverse_merge! locals: {}
-      options.reverse_merge! ::JbuilderTemplate.template_lookup_options
+      options.reverse_merge! ::EtCcdExport::JbuilderTemplate.template_lookup_options
       as = options[:as]
 
       if as && options.key?(:collection)
@@ -75,7 +75,7 @@ module EtCcdExport
 
     def _set_inline_partial(name, object, options)
       value = if object.nil?
-        []
+                []
       elsif _is_collection?(object)
         _scope{ _render_partial_with_options options.merge(collection: object) }
       else
