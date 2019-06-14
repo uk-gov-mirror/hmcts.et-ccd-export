@@ -346,10 +346,13 @@ RSpec.describe EtCcdExport::ClaimPresenter do
       it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, post_code: nil) }).with_result(nil) }
     end
 
-    context 'claimant_work_phone_number' do
-      it { is_expected.to present_ccd_field('claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address_telephone_number: 'Number 1' }).with_result('Number 1') }
-      it { is_expected.to present_ccd_field('claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address_telephone_number: 'Number 2' }).with_result('Number 2') }
-      it { is_expected.to present_ccd_field('claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address_telephone_number: nil }).with_result(nil) }
+    context 'claimantWorkAddress.claimant_work_phone_number' do
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address_telephone_number: 'Number 1' }).with_result('Number 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address_telephone_number: 'Number 2' }).with_result('Number 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address_telephone_number: nil }).with_result(nil) }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address: nil, address_telephone_number: 'Number 1' }).with_result('Number 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address: nil, address_telephone_number: 'Number 2' }).with_result('Number 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_phone_number').using(:claim, primary_respondent_attrs: { work_address: nil, address_telephone_number: nil }).with_result(nil) }
     end
 
     context 'respondentCollection[0].value.respondent_name' do
@@ -449,8 +452,25 @@ RSpec.describe EtCcdExport::ClaimPresenter do
       it { is_expected.to present_ccd_field('claimantOtherType.claimant_employed_to').using(:claim, employment_details_attrs: { end_date: nil }).with_result(nil) }
       it { is_expected.to_not present_ccd_field('claimantOtherType.claimant_employed_to').using(:claim, employment_details_traits: [:blank]) }
     end
+
+    context 'receiptDate' do
+      it { is_expected.to present_ccd_field('receiptDate').using(:claim, date_of_receipt: '2019-06-12T07:28:58.000Z').with_result('2019-06-12') }
+      it { is_expected.to present_ccd_field('receiptDate').using(:claim, date_of_receipt: '2019-07-13T07:28:58.000Z').with_result('2019-07-13') }
+      it { is_expected.to present_ccd_field('receiptDate').using(:claim, date_of_receipt: '2019-07-14').with_result('2019-07-14') }
+    end
     
+    context 'feeGroupReference' do
+      it { is_expected.to present_ccd_field('feeGroupReference').using(:claim, reference: 'Reference 1').with_result('Reference 1') }
+      it { is_expected.to present_ccd_field('feeGroupReference').using(:claim, reference: 'Reference 2').with_result('Reference 2') }
+    end
     
+    context 'caseType' do
+      it { is_expected.to present_ccd_field('caseType').using(:claim).with_result('Single') }
+    end
+
+    context 'claimant_TypeOfClaimant' do
+      it { is_expected.to present_ccd_field('claimant_TypeOfClaimant').using(:claim, :default).with_result('Individual') }
+    end
     
     
     

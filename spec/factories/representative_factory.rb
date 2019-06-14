@@ -4,7 +4,7 @@ FactoryBot.define do
       name { "Rep Name" }
       organisation_name { "Org name" }
       address { build(:address) }
-      address_telephone_number { "01234 5657899" }
+      address_telephone_number { "01234 565899" }
       mobile_number { "07771 666555" }
       email_address { "test@email.com" }
       representative_type { "Solicitor" }
