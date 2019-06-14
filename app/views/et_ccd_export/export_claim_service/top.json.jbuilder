@@ -5,7 +5,7 @@ json.set! "data" do
     json.set! "claimant_initials", nil
     json.set! "claimant_last_name", claim.dig('primary_claimant', 'last_name')
     json.set! "claimant_date_of_birth", claim.dig('primary_claimant', 'date_of_birth')
-    json.set! "claimant_gender", claim.dig('primary_claimant', 'gender')
+    json.set! "claimant_gender", optional_gender(claim.dig('primary_claimant', 'gender'))
   end
   json.set! "claimantType" do
     json.set! "claimant_addressUK" do

@@ -17,11 +17,9 @@ RSpec.describe EtCcdExport::ClaimPresenter do
       ccd_field_path_nodes = ccd_field_path.split('.')
       match do |presenter|
         result = presenter.present(build(*@from_args).as_json, event_token: 'event token')
-
         nodes = JsonPath.new("$data.#{ccd_field_path}").on(result)
         @result = nodes.first
         @key_present = nodes.length > 0
-
         if expected_result == undefined
           @key_present
         else
