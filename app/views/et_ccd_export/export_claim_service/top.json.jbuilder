@@ -69,11 +69,19 @@ json.set! "data" do
   end
   json.set! "claimantWorkAddress" do
     json.set! "claimant_work_address" do
-      json.set! "AddressLine1", claim.dig('primary_respondent', 'work_address', 'building')
-      json.set! "AddressLine2", claim.dig('primary_respondent', 'work_address', 'street')
-      json.set! "PostTown", claim.dig('primary_respondent', 'work_address', 'locality')
-      json.set! "County", claim.dig('primary_respondent', 'work_address', 'county')
-      json.set! "PostCode", claim.dig('primary_respondent', 'work_address', 'post_code')
+      if claim.dig('primary_respondent', 'work_address').present?
+        json.set! "AddressLine1", claim.dig('primary_respondent', 'work_address', 'building')
+        json.set! "AddressLine2", claim.dig('primary_respondent', 'work_address', 'street')
+        json.set! "PostTown", claim.dig('primary_respondent', 'work_address', 'locality')
+        json.set! "County", claim.dig('primary_respondent', 'work_address', 'county')
+        json.set! "PostCode", claim.dig('primary_respondent', 'work_address', 'post_code')
+      else
+        json.set! "AddressLine1", claim.dig('primary_respondent', 'address', 'building')
+        json.set! "AddressLine2", claim.dig('primary_respondent', 'address', 'street')
+        json.set! "PostTown", claim.dig('primary_respondent', 'address', 'locality')
+        json.set! "County", claim.dig('primary_respondent', 'address', 'county')
+        json.set! "PostCode", claim.dig('primary_respondent', 'address', 'post_code')
+      end
     end
   end
   json.set! "respondentCollection" do

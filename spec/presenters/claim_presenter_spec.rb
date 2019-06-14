@@ -343,9 +343,9 @@ RSpec.describe EtCcdExport::ClaimPresenter do
       it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: build(:address, post_code: 'Postcode 1') }).with_result('Postcode 1') }
       it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: build(:address, post_code: 'Postcode 2') }).with_result('Postcode 2') }
       it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: build(:address, post_code: nil) }).with_result(nil) }
-      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, building: 'Postcode 1') }).with_result('Postcode 1') }
-      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, building: 'Postcode 2') }).with_result('Postcode 2') }
-      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, building: nil) }).with_result(nil) }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, post_code: 'Postcode 1') }).with_result('Postcode 1') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, post_code: 'Postcode 2') }).with_result('Postcode 2') }
+      it { is_expected.to present_ccd_field('claimantWorkAddress.claimant_work_address.PostCode').using(:claim, primary_respondent_attrs: { work_address: nil, address: build(:address, post_code: nil) }).with_result(nil) }
     end
 
     context 'claimant_work_phone_number' do
