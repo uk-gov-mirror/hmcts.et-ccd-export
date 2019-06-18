@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/hmcts/et-ccd-client-ruby.git
+  revision: 8e43cf2da13aaae96378666135bf1071eb8e03db
+  tag: v0.1.1
+  specs:
+    et_ccd_client (0.1.1)
+
+GIT
   remote: https://github.com/ministryofjustice/azure_env_secrets.git
   revision: b72195789c350839d8a7f492eb2938c5101d5400
   tag: v0.1.3
@@ -128,6 +135,7 @@ DEPENDENCIES
   activesupport (~> 5.2, >= 5.2.3)
   addressable (~> 2.6)
   azure_env_secrets!
+  et_ccd_client!
   factory_bot (~> 5.0, >= 5.0.2)
   jbuilder (~> 2.9, >= 2.9.1)
   jsonpath (~> 0.5.8)

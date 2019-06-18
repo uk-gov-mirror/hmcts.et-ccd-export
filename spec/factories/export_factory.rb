@@ -160,7 +160,7 @@ FactoryBot.define do
     resource { nil }
 
     trait :for_claim do
-      resource { build(:claim) }
+      resource { build(:claim, :default) }
       resource_type { 'Claim' }
     end
   end
