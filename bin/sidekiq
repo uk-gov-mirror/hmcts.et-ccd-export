@@ -26,4 +26,5 @@ end
 require "rubygems"
 require "bundler/setup"
 
+Bundler.require(:default)
 load Gem.bin_path("sidekiq", "sidekiq")
