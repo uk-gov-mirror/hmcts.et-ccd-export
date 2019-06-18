@@ -1,3 +1,4 @@
+require 'azure_env_secrets'
 require 'active_support/core_ext/string'
 require 'sidekiq_alive'
 require 'sidekiq'
