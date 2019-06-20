@@ -21,7 +21,7 @@ json.set! 'data' do
     json.set! 'claimant_phone_number', claim.dig('primary_claimant', 'address_telephone_number')
     json.set! 'claimant_mobile_number', claim.dig('primary_claimant', 'mobile_number')
     json.set! 'claimant_email_address', claim.dig('primary_claimant', 'email_address')
-    json.set! 'claimant_contact_preference', claim.dig('primary_claimant', 'contact_preference')
+    json.set! 'claimant_contact_preference', claim.dig('primary_claimant', 'contact_preference')&.humanize
   end
   json.set! 'caseType', 'Single'
   json.set! 'respondentSumType' do

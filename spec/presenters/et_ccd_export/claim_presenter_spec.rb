@@ -113,8 +113,8 @@ RSpec.describe EtCcdExport::ClaimPresenter do
     end
 
     context 'with claimantType.claimant_contact_preference' do
-      it { is_expected.to present_ccd_field('claimantType.claimant_contact_preference').using(:claim, primary_claimant_attrs: { contact_preference: 'Email' }).with_result('Email') }
-      it { is_expected.to present_ccd_field('claimantType.claimant_contact_preference').using(:claim, primary_claimant_attrs: { contact_preference: 'Post' }).with_result('Post') }
+      it { is_expected.to present_ccd_field('claimantType.claimant_contact_preference').using(:claim, primary_claimant_attrs: { contact_preference: 'email' }).with_result('Email') }
+      it { is_expected.to present_ccd_field('claimantType.claimant_contact_preference').using(:claim, primary_claimant_attrs: { contact_preference: 'post' }).with_result('Post') }
       it { is_expected.to present_ccd_field('claimantType.claimant_contact_preference').using(:claim, primary_claimant_attrs: { contact_preference: nil }).with_result(nil) }
     end
 
