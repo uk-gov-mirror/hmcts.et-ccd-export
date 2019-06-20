@@ -36,12 +36,12 @@ jobs:
 
   - script: |
       sudo apt-get update
-      sudo apt-get install libpq-dev mcrypt libmcrypt-dev pdftk
+      sudo apt-get install libpq-dev
       gem install bundler -v 1.17.3
     displayName: 'before install'
   - script: |
-      RAILS_ENV=test bundle install
-      RAILS_ENV=test bundle exec rspec
+      bundle install
+      bundle exec rspec
     displayName: 'script'
 
 - job: BuildAndPushImage
