@@ -1,6 +1,5 @@
 require 'spec_helper'
-require_relative '../../../app/services/et_ccd_export/export_claim_service'
-RSpec.describe EtCcdExport::ExportClaimService do
+RSpec.describe ExportClaimService do
   subject(:service) { described_class.new }
 
   shared_context 'with stubbed ccd' do

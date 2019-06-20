@@ -1,1 +1,0 @@
-::AzureEnvSecrets.load

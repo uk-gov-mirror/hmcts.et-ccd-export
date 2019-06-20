@@ -1,7 +1,6 @@
 ---
 :concurrency: 5
 :verbose: true
-:require: ./application.rb
 staging:
   :concurrency: 10
 production:

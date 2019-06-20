@@ -1,4 +1,3 @@
-require 'sidekiq'
 module EtExporter
   class ExportClaimWorker
     include Sidekiq::Worker
