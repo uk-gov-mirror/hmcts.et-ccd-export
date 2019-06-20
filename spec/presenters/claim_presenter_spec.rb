@@ -1,8 +1,6 @@
-require 'spec_helper'
-require 'json'
+require 'rails_helper'
 require 'jsonpath'
-require_relative '../../../app/presenters/et_ccd_export/claim_presenter'
-RSpec.describe EtCcdExport::ClaimPresenter do
+RSpec.describe ClaimPresenter do
   subject(:presenter) { described_class }
 
   def ccd_field(result, path)
