@@ -59,6 +59,19 @@ The application must be configured to use the same redis details as the API serv
    ```
    
    To re enable you must completely remove this env var
+   
+5. Connecting to sentry is easy. Just set :-
+
+    ```
+    RAVEN_DSN=<your sentry dsn>
+    ```
+    
+    and if your sentry doesnt have a valid SSL cert do
+    
+    ```
+    RAVEN_SSL_VERIFICATION=false
+    ```
+    
 
 ## Running
 
