@@ -10,7 +10,7 @@ FactoryBot.define do
       representative_type { "Solicitor" }
       dx_number { nil }
       reference { "rep ref" }
-      contact_preference { "Email" }
+      contact_preference { "email" }
       fax_number { "01234 555666" }
     end
   end
