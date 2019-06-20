@@ -1,4 +1,4 @@
-FROM ministryofjustice/ruby:2.6.2
+FROM ministryofjustice/ruby:2.5.1
 
 # Adding argument support for ping.json
 ARG APPVERSION=unknown
