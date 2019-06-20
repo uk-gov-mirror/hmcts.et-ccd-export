@@ -33,7 +33,32 @@ The application must be configured to use the same redis details as the API serv
 
    ```
 
+2. Simulation mode - where no data is transferred, but just logged can
+   be enabled using :-
+   
+   ```
+   ET_CCD_SIMULATION=true
+   ```
+   
+3. Logging levels can be changed using the following (note that
+   this is not a rails app, but I have kept the same naming
+   convention as a rails app)
+   
+   ```
+   RAILS_LOG_LEVEL=debug
+   ```
+   
+   values are debug (noisiest) , info, warn, error and fatal (quietist)
 
+4. Disabling 'sidekiq_alive' (provides a http server to sense
+   if sidekiq is running or not - used in deployment) can be done
+   as follows :-
+   
+   ```
+   DISABLE_SIDEKIQ_ALIVE=true
+   ```
+   
+   To re enable you must completely remove this env var
 
 ## Running
 
