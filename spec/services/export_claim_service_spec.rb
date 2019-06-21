@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 RSpec.describe ExportClaimService do
   subject(:service) { described_class.new }
 
@@ -15,7 +15,7 @@ RSpec.describe ExportClaimService do
     # include_context 'with stubbed ccd'
 
     it 'requests a token as it doesnt have one' do
-      #service.call(export)
+      service.call(export.as_json)
     end
 
     it 'only requests a token the first time'

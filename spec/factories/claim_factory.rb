@@ -8,7 +8,7 @@ FactoryBot.define do
       primary_claimant_attrs { {} }
       primary_claimant_traits { [:default] }
       secondary_claimant_traits { [:mr_first_last] }
-      secondary_respondent_traits { [:full] }
+      secondary_respondent_traits { [:basic] }
       secondary_respondent_attrs { {} }
       primary_representative_traits { [:full] }
       primary_representative_attrs { {} }
@@ -17,6 +17,7 @@ FactoryBot.define do
     end
 
     trait :default do
+      with_pdf_file
       sequence :reference do |n|
         "#{office_code}#{20000000 + n}00"
       end
@@ -30,31 +31,16 @@ FactoryBot.define do
       jurisdiction { 2 }
       office_code { 22 }
       date_of_receipt { "2019-06-12T07:28:58.000Z" }
-      administrator { nil }
-      other_known_claimant_names { "" }
-      discrimination_claims { [] }
-      pay_claims { [] }
-      desired_outcomes { [] }
-      other_claim_details { "" }
-      claim_details { "" }
-      other_outcome { "" }
+      other_known_claimant_names { "James Blunt, Punky Brewsters, Shirley Temple" }
+      discrimination_claims { ["sex_including_equal_pay"] }
+      pay_claims { ["redundancy"] }
+      desired_outcomes { ["compensation_only"] }
+      other_claim_details { "This is the other claim details field" }
+      claim_details { "This is the claim details field" }
+      other_outcome { "I would like 50,000GBP for the stress this has caused me" }
       send_claim_to_whistleblowing_entity { false }
-      miscellaneous_information { "" }
+      miscellaneous_information { nil }
       is_unfair_dismissal { false }
-      pdf_template_reference { "et1-v1-en" }
-      alt_phone_number { "" }
-      contact { "John Smith" }
-      dx_number { "" }
-      contact_preference { "email" }
-      email_address { "john@dodgyco.com" }
-      fax_number { "" }
-      organisation_employ_gb { 10 }
-      organisation_more_than_one_site { false }
-      employment_at_site_number { 5 }
-      disability { true }
-      disability_information { "Lorem ipsum disability" }
-      acas_certificate_number { "AC123456/78/90" }
-      acas_exemption_code { nil }
     end
 
     secondary_claimants { [] }

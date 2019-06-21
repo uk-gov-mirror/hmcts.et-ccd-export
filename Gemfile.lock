@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/hmcts/et-ccd-client-ruby.git
-  revision: 8e43cf2da13aaae96378666135bf1071eb8e03db
-  tag: v0.1.1
+  revision: 94dde2793016a191d29a414ec58092a81c550419
+  tag: v0.1.5
   specs:
-    et_ccd_client (0.1.1)
+    et_ccd_client (0.1.5)
 
 GIT
   remote: https://github.com/ministryofjustice/azure_env_secrets.git

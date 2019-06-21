@@ -1,13 +1,33 @@
 FactoryBot.define do
   factory :respondent, class: ::EtCcdExport::Test::Json::Node do
+    trait :basic do
+      name { "dodgy_co" }
+      address { build(:address) }
+      work_address_telephone_number { "01234 567891" }
+      address_telephone_number { "01234 567890" }
+      work_address { build(:address) }
+      alt_phone_number { "0333 321090" }
+      contact { nil }
+      dx_number { nil }
+      contact_preference { nil }
+      email_address { nil }
+      fax_number { nil }
+      organisation_employ_gb { nil }
+      organisation_more_than_one_site { nil }
+      employment_at_site_number { nil }
+      disability { nil }
+      disability_information { nil }
+      acas_certificate_number { "AC123456/78/90" }
+      acas_exemption_code { nil }
+    end
+
     trait :full do
       name { "dodgy_co" }
       address { build(:address) }
       work_address_telephone_number { "" }
-      address_telephone_number { "" }
-      acas_number { nil }
+      address_telephone_number { "01234 567890" }
       work_address { build(:address) }
-      alt_phone_number { "" }
+      alt_phone_number { "0333 321090" }
       contact { "John Smith" }
       dx_number { "" }
       contact_preference { "email" }
