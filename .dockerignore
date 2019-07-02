@@ -1,0 +1,7 @@
+.git
+.DS_Store
+.gitignore
+log/*
+tmp/*
+Dockerfile
+azure-pipelines.yml
