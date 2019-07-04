@@ -36,6 +36,7 @@ group :test do
   gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
   gem 'factory_bot', '~> 5.0', '>= 5.0.2'
   gem 'jsonpath', '~> 0.5.8'
+  gem 'et_fake_ccd', '~> 0.1'
 end
 
 group :development do
