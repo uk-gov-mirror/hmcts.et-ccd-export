@@ -10,5 +10,4 @@ EtCcdClient.config do |c|
   c.sidam_password = ENV.fetch('CCD_SIDAM_PASSWORD', 'invalid')
   c.case_management_ui_base_url = ENV.fetch('CCD_CASE_MANAGEMENT_UI_BASE_URL', 'http://localhost:3451')
   c.case_management_ui_redirect_url = ENV.fetch('CCD_CASE_MANAGEMENT_UI_REDIRECT_URL', "#{c.case_management_ui_base_url}/oauth2redirect")
-  c.logger = Rails.logger
 end

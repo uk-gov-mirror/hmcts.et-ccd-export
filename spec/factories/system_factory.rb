@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :system, class: ::EtCcdExport::Test::Json::Node do
     sequence(:name) { |idx| "CCD Instance #{idx}" }
-    reference { |idx| "ccd_instance_#{idx}" }
+    sequence(:reference) { |idx| "ccd_instance_#{idx}" }
     office_codes { [1,2,3,4,5] }
     enabled { true }
     configurations do

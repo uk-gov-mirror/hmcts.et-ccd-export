@@ -89,13 +89,26 @@ The application must be configured to use the same redis details as the API serv
     CCD_JURISDICTION_ID=<jurisdiction id>
     ```
     
-    Finally, the 'microservice' that is used to get a token in idam is 'ccd_gw' as standard.  To change
+    The 'microservice' that is used to get a token in idam is 'ccd_gw' as standard.  To change
     this do :-
     
     ```
-    CCD_MICROSERVICE=<microservice>
+    CCD_MICROSERVICE_ID=<microservice>
     ```
     
+    and
+    
+    ```
+    CCD_MICROSERVICE_SECRET=<microservice-secret>
+    ```
+    
+    Hopefully, this will only be required in the short term for
+    ccd-docker which still uses TIDAM.  Note that this defaults to 
+    true which is correct for normal environments
+    
+    ```
+    CCD_USE_SIDAM=false
+    ```
 
 ## Running
 
