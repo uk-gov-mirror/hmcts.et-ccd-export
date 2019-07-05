@@ -40,89 +40,6 @@
         }
       }
     },
-    "create_case_data": {
-      "type": "object",
-      "title": "The case data",
-      "required": [
-        "receiptDate",
-        "feeGroupReference",
-        "claimant_TypeOfClaimant",
-        "claimantIndType",
-        "claimantType",
-        "caseType",
-        "respondentSumType",
-        "claimantWorkAddress",
-        "respondentCollection",
-        "claimantOtherType",
-        "claimantRepresentedQuestion",
-        "representativeClaimantType"
-      ],
-      "properties": {
-        "receiptDate": {
-          "type": "string",
-          "title": "The Receipt date Schema",
-          "default": "",
-          "examples": [
-            "2019-06-21"
-          ],
-          "pattern": "^(\\d{4}-\\d{2}-\\d{2})$"
-        },
-        "feeGroupReference": {
-          "type": "string",
-          "title": "The fee group reference",
-          "default": "",
-          "examples": [
-            "332000000200"
-          ],
-          "pattern": "^(\\d{12})$"
-        },
-        "claimant_TypeOfClaimant": {
-          "type": "string",
-          "title": "The type of claimant Schema",
-          "default": "",
-          "examples": [
-            "Individual",
-            "Company"
-          ],
-          "enum": ["Individual", "Company"]
-        },
-        "claimantIndType": { "$ref": "#/definitions_claimant_ind_type"},
-        "claimantType": { "$ref": "#/definitions/claimant_type"},
-        "caseType": {
-          "$id": "#/properties/data/properties/caseType",
-          "type": "string",
-          "title": "The case type",
-          "default": "",
-          "examples": [
-            "Single",
-            "Multiple"
-          ],
-          "enum": ["Single", "Multiple"]
-        },
-        "respondentSumType": { "$ref": "#/definitions/respondent_sum_type" },
-        "claimantWorkAddress": { "$ref": "#/definitions/claimant_work_address"},
-        "respondentCollection": {
-          "$id": "#/properties/data/properties/respondentCollection",
-          "type": "array",
-          "title": "The Respondent collection Schema",
-          "items":{ "$ref": "#/definitions/respondent_for_collection"}
-        },
-        "claimantOtherType": { "$ref": "#/definitions/claimant_other_type"},
-        "claimantRepresentedQuestion": {
-          "$id": "#/properties/data/properties/claimantRepresentedQuestion",
-          "type": "string",
-          "title": "The Claimantrepresentedquestion Schema",
-          "default": "",
-          "examples": [
-            "Yes",
-            "No"
-          ],
-          "enum": ["Yes", "No"]
-        },
-        "representativeClaimantType": { "$ref": "#/definitions/representative_claimant_type"}
-      }
-
-    },
     "claimant_ind_type": {
       "$id": "#/properties/data/properties/claimantIndType",
       "type": "object",
@@ -830,48 +747,83 @@
   },
   "schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "title": "The case create schema",
+  "title": "The case data",
   "required": [
-    "data",
-    "event",
-    "event_token",
-    "ignore_warning",
-    "draft_id"
+    "receiptDate",
+    "feeGroupReference",
+    "claimant_TypeOfClaimant",
+    "claimantIndType",
+    "claimantType",
+    "caseType",
+    "respondentSumType",
+    "claimantWorkAddress",
+    "respondentCollection",
+    "claimantOtherType",
+    "claimantRepresentedQuestion",
+    "representativeClaimantType"
   ],
   "properties": {
-    "data": {
-      "$ref": "#/definitions/create_case_data"
-    },
-    "event": {
-      "$ref": "#/definitions/initiate_case_event"
-    },
-    "event_token": {
-      "$id": "#/properties/event_token",
+    "receiptDate": {
       "type": "string",
-      "title": "The Event_token Schema",
+      "title": "The Receipt date Schema",
       "default": "",
       "examples": [
-        "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI0b3EwM2o4bjdsOW5za2VhdWEzZDA1ZzQ5ZCIsInN1YiI6IjIyIiwiaWF0IjoxNTYxMTIwMzczLCJldmVudC1pZCI6ImluaXRpYXRlQ2FzZSIsImNhc2UtdHlwZS1pZCI6IkVtcFRyaWJfTVZQXzEuMF9NYW5jIiwianVyaXNkaWN0aW9uLWlkIjoiRU1QTE9ZTUVOVCIsImNhc2UtdmVyc2lvbiI6ImJmMjFhOWU4ZmJjNWEzODQ2ZmIwNWI0ZmEwODU5ZTA5MTdiMjIwMmYifQ.em75FKtau8ss5mvBKdRvoIE-ca32QilxJRBBmvvVwDQ"
+        "2019-06-21"
       ],
-      "pattern": "^(.*)$"
+      "pattern": "^(\\d{4}-\\d{2}-\\d{2})$"
     },
-    "ignore_warning": {
-      "$id": "#/properties/ignore_warning",
-      "type": "boolean",
-      "title": "The Ignore_warning Schema",
-      "default": false,
+    "feeGroupReference": {
+      "type": "string",
+      "title": "The fee group reference",
+      "default": "",
       "examples": [
-        false
-      ]
+        "332000000200"
+      ],
+      "pattern": "^(\\d{12})$"
     },
-    "draft_id": {
-      "$id": "#/properties/draft_id",
-      "type": "null",
-      "title": "The Draft_id Schema",
-      "default": null,
+    "claimant_TypeOfClaimant": {
+      "type": "string",
+      "title": "The type of claimant Schema",
+      "default": "",
       "examples": [
-        null
-      ]
-    }
+        "Individual",
+        "Company"
+      ],
+      "enum": ["Individual", "Company"]
+    },
+    "claimantIndType": { "$ref": "#/definitions/claimant_ind_type"},
+    "claimantType": { "$ref": "#/definitions/claimant_type"},
+    "caseType": {
+      "$id": "#/properties/data/properties/caseType",
+      "type": "string",
+      "title": "The case type",
+      "default": "",
+      "examples": [
+        "Single",
+        "Multiple"
+      ],
+      "enum": ["Single", "Multiple"]
+    },
+    "respondentSumType": { "$ref": "#/definitions/respondent_sum_type" },
+    "claimantWorkAddress": { "$ref": "#/definitions/claimant_work_address"},
+    "respondentCollection": {
+      "$id": "#/properties/data/properties/respondentCollection",
+      "type": "array",
+      "title": "The Respondent collection Schema",
+      "items":{ "$ref": "#/definitions/respondent_for_collection"}
+    },
+    "claimantOtherType": { "$ref": "#/definitions/claimant_other_type"},
+    "claimantRepresentedQuestion": {
+      "$id": "#/properties/data/properties/claimantRepresentedQuestion",
+      "type": "string",
+      "title": "The Claimantrepresentedquestion Schema",
+      "default": "",
+      "examples": [
+        "Yes",
+        "No"
+      ],
+      "enum": ["Yes", "No"]
+    },
+    "representativeClaimantType": { "$ref": "#/definitions/representative_claimant_type"}
   }
 }

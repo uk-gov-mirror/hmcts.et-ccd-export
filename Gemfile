@@ -37,6 +37,7 @@ group :test do
   gem 'factory_bot', '~> 5.0', '>= 5.0.2'
   gem 'jsonpath', '~> 0.5.8'
   gem 'et_fake_ccd', '~> 0.1'
+  gem 'json_matchers', '~> 0.11.0'
 end
 
 group :development do
