@@ -24,7 +24,8 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'addressable', '~> 2.6'
 gem 'rest-client', '~> 2.0', '>= 2.0.2'
 gem 'jbuilder', '~> 2.9', '>= 2.9.1'
-gem 'et_ccd_client', git: 'https://github.com/hmcts/et-ccd-client-ruby.git', tag: 'v0.1.1'
+gem 'et_ccd_client', git: 'https://github.com/hmcts/et-ccd-client-ruby.git', tag: 'v0.1.14'
+#gem 'et_ccd_client', path: '/Users/garytaylor/Sync/ruby/moj/et/et-ccd-client-ruby'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -35,6 +36,8 @@ group :test do
   gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
   gem 'factory_bot', '~> 5.0', '>= 5.0.2'
   gem 'jsonpath', '~> 0.5.8'
+  gem 'et_fake_ccd', '~> 0.1'
+  gem 'json_matchers', '~> 0.11.0'
 end
 
 group :development do

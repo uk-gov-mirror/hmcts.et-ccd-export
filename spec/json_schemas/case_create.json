@@ -1,0 +1,829 @@
+{
+  "id": "file:/case_create.json",
+  "definitions": {
+    "initiate_case_event": {
+      "type": "object",
+      "title": "The Event Schema",
+      "required": [
+        "id",
+        "summary",
+        "description"
+      ],
+      "properties": {
+        "id": {
+          "$id": "#/properties/event/properties/id",
+          "type": "string",
+          "title": "The Id of the event",
+          "default": "",
+          "examples": [
+            "initiateCase"
+          ],
+          "enum": ["initiateCase"]
+        },
+        "summary": {
+          "$id": "#/properties/event/properties/summary",
+          "type": "string",
+          "title": "The event summary",
+          "default": "",
+          "examples": [
+            ""
+          ]
+        },
+        "description": {
+          "$id": "#/properties/event/properties/description",
+          "type": "string",
+          "title": "The event description",
+          "default": "",
+          "examples": [
+            ""
+          ]
+        }
+      }
+    },
+    "claimant_ind_type": {
+      "$id": "#/properties/data/properties/claimantIndType",
+      "type": "object",
+      "title": "The Claimantindtype Schema",
+      "required": [
+        "claimant_title1",
+        "claimant_first_names",
+        "claimant_last_name",
+        "claimant_date_of_birth",
+        "claimant_gender"
+      ],
+      "properties": {
+        "claimant_title1": {
+          "$id": "#/properties/data/properties/claimantIndType/properties/claimant_title1",
+          "type": "string",
+          "title": "The Claimant_title1 Schema",
+          "default": "",
+          "examples": [
+            "Miss"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "claimant_first_names": {
+          "$id": "#/properties/data/properties/claimantIndType/properties/claimant_first_names",
+          "type": "string",
+          "title": "The Claimant_first_names Schema",
+          "default": "",
+          "examples": [
+            "Jessika"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "claimant_last_name": {
+          "$id": "#/properties/data/properties/claimantIndType/properties/claimant_last_name",
+          "type": "string",
+          "title": "The Claimant_last_name Schema",
+          "default": "",
+          "examples": [
+            "Kunze"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "claimant_date_of_birth": {
+          "$id": "#/properties/data/properties/claimantIndType/properties/claimant_date_of_birth",
+          "type": "string",
+          "title": "The Claimant_date_of_birth Schema",
+          "default": "",
+          "examples": [
+            "1982-11-21"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "claimant_gender": {
+          "$id": "#/properties/data/properties/claimantIndType/properties/claimant_gender",
+          "type": "string",
+          "title": "The Claimant_gender Schema",
+          "default": "",
+          "examples": [
+            "Male"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "claimant_type": {
+      "$id": "#/properties/data/properties/claimantType",
+      "type": "object",
+      "title": "The Claimanttype Schema",
+      "required": [
+        "claimant_addressUK",
+        "claimant_phone_number",
+        "claimant_mobile_number",
+        "claimant_email_address",
+        "claimant_contact_preference"
+      ],
+      "properties": {
+        "claimant_addressUK": {
+          "$id": "#/properties/data/properties/claimantType/properties/claimant_addressUK",
+          "type": "object",
+          "title": "The Claimant_addressuk Schema",
+          "required": [
+            "AddressLine1",
+            "AddressLine2",
+            "PostTown",
+            "County",
+            "Country",
+            "PostCode"
+          ],
+          "properties": {
+            "AddressLine1": {
+              "$id": "#/properties/data/properties/claimantType/properties/claimant_addressUK/properties/AddressLine1",
+              "type": "string",
+              "title": "The Addressline1 Schema",
+              "default": "",
+              "examples": [
+                "49275"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "AddressLine2": {
+              "$id": "#/properties/data/properties/claimantType/properties/claimant_addressUK/properties/AddressLine2",
+              "type": "string",
+              "title": "The Addressline2 Schema",
+              "default": "",
+              "examples": [
+                "Pouros Flat"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "PostTown": {
+              "$id": "#/properties/data/properties/claimantType/properties/claimant_addressUK/properties/PostTown",
+              "type": "string",
+              "title": "The Posttown Schema",
+              "default": "",
+              "examples": [
+                "London"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "County": {
+              "$id": "#/properties/data/properties/claimantType/properties/claimant_addressUK/properties/County",
+              "type": "string",
+              "title": "The County Schema",
+              "default": "",
+              "examples": [
+                "Manchester"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "Country": {
+              "$id": "#/properties/data/properties/claimantType/properties/claimant_addressUK/properties/Country",
+              "type": "null",
+              "title": "The Country Schema",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "PostCode": {
+              "$id": "#/properties/data/properties/claimantType/properties/claimant_addressUK/properties/PostCode",
+              "type": "string",
+              "title": "The Postcode Schema",
+              "default": "",
+              "examples": [
+                "SW1H 9AJ"
+              ],
+              "pattern": "^(.*)$"
+            }
+          }
+        },
+        "claimant_phone_number": {
+          "$id": "#/properties/data/properties/claimantType/properties/claimant_phone_number",
+          "type": "string",
+          "title": "The Claimant_phone_number Schema",
+          "default": "",
+          "examples": [
+            "01234 567890"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "claimant_mobile_number": {
+          "$id": "#/properties/data/properties/claimantType/properties/claimant_mobile_number",
+          "type": "string",
+          "title": "The Claimant_mobile_number Schema",
+          "default": "",
+          "examples": [
+            "01234 098765"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "claimant_email_address": {
+          "$id": "#/properties/data/properties/claimantType/properties/claimant_email_address",
+          "type": "string",
+          "title": "The Claimant_email_address Schema",
+          "default": "",
+          "examples": [
+            "sivvoy.taing@hmcts.net"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "claimant_contact_preference": {
+          "$id": "#/properties/data/properties/claimantType/properties/claimant_contact_preference",
+          "type": "string",
+          "title": "The Claimant_contact_preference Schema",
+          "default": "",
+          "examples": [
+            "Email"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "respondent_sum_type": {
+      "$id": "#/properties/data/properties/respondentSumType",
+      "type": "object",
+      "title": "The Respondentsumtype Schema",
+      "required": [
+        "respondent_name",
+        "respondent_ACAS_question",
+        "respondent_address",
+        "respondent_phone1",
+        "respondent_ACAS"
+      ],
+      "properties": {
+        "respondent_name": {
+          "$id": "#/properties/data/properties/respondentSumType/properties/respondent_name",
+          "type": "string",
+          "title": "The Respondent_name Schema",
+          "default": "",
+          "examples": [
+            "Torphy-Bernhard"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "respondent_ACAS_question": {
+          "$id": "#/properties/data/properties/respondentSumType/properties/respondent_ACAS_question",
+          "type": "string",
+          "title": "The Respondent_acas_question Schema",
+          "default": "",
+          "examples": [
+            "Yes"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "respondent_address": {
+          "$id": "#/properties/data/properties/respondentSumType/properties/respondent_address",
+          "type": "object",
+          "title": "The Respondent_address Schema",
+          "required": [
+            "AddressLine1",
+            "AddressLine2",
+            "PostTown",
+            "County",
+            "PostCode"
+          ],
+          "properties": {
+            "AddressLine1": {
+              "$id": "#/properties/data/properties/respondentSumType/properties/respondent_address/properties/AddressLine1",
+              "type": "string",
+              "title": "The Addressline1 Schema",
+              "default": "",
+              "examples": [
+                "1779"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "AddressLine2": {
+              "$id": "#/properties/data/properties/respondentSumType/properties/respondent_address/properties/AddressLine2",
+              "type": "string",
+              "title": "The Addressline2 Schema",
+              "default": "",
+              "examples": [
+                "Juvenal Shores"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "PostTown": {
+              "$id": "#/properties/data/properties/respondentSumType/properties/respondent_address/properties/PostTown",
+              "type": "string",
+              "title": "The Posttown Schema",
+              "default": "",
+              "examples": [
+                "London"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "County": {
+              "$id": "#/properties/data/properties/respondentSumType/properties/respondent_address/properties/County",
+              "type": "string",
+              "title": "The County Schema",
+              "default": "",
+              "examples": [
+                "Greater London"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "PostCode": {
+              "$id": "#/properties/data/properties/respondentSumType/properties/respondent_address/properties/PostCode",
+              "type": "string",
+              "title": "The Postcode Schema",
+              "default": "",
+              "examples": [
+                "SW1H 9QR"
+              ],
+              "pattern": "^(.*)$"
+            }
+          }
+        },
+        "respondent_phone1": {
+          "$id": "#/properties/data/properties/respondentSumType/properties/respondent_phone1",
+          "type": "string",
+          "title": "The Respondent_phone1 Schema",
+          "default": "",
+          "examples": [
+            "02222 321654"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "respondent_ACAS": {
+          "$id": "#/properties/data/properties/respondentSumType/properties/respondent_ACAS",
+          "type": "string",
+          "title": "The Respondent_acas Schema",
+          "default": "",
+          "examples": [
+            "AC123456/78/90"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "claimant_work_address": {
+      "$id": "#/properties/data/properties/claimantWorkAddress",
+      "type": "object",
+      "title": "The Claimantworkaddress Schema",
+      "required": [
+        "claimant_work_address",
+        "claimant_work_phone_number"
+      ],
+      "properties": {
+        "claimant_work_address": {
+          "$id": "#/properties/data/properties/claimantWorkAddress/properties/claimant_work_address",
+          "type": "object",
+          "title": "The Claimant_work_address Schema",
+          "required": [
+            "AddressLine1",
+            "AddressLine2",
+            "PostTown",
+            "County",
+            "PostCode"
+          ],
+          "properties": {
+            "AddressLine1": {
+              "$id": "#/properties/data/properties/claimantWorkAddress/properties/claimant_work_address/properties/AddressLine1",
+              "type": "string",
+              "title": "The Addressline1 Schema",
+              "default": "",
+              "examples": [
+                "101"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "AddressLine2": {
+              "$id": "#/properties/data/properties/claimantWorkAddress/properties/claimant_work_address/properties/AddressLine2",
+              "type": "string",
+              "title": "The Addressline2 Schema",
+              "default": "",
+              "examples": [
+                "Petty France"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "PostTown": {
+              "$id": "#/properties/data/properties/claimantWorkAddress/properties/claimant_work_address/properties/PostTown",
+              "type": "string",
+              "title": "The Posttown Schema",
+              "default": "",
+              "examples": [
+                "London"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "County": {
+              "$id": "#/properties/data/properties/claimantWorkAddress/properties/claimant_work_address/properties/County",
+              "type": "string",
+              "title": "The County Schema",
+              "default": "",
+              "examples": [
+                "Greater London"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "PostCode": {
+              "$id": "#/properties/data/properties/claimantWorkAddress/properties/claimant_work_address/properties/PostCode",
+              "type": "string",
+              "title": "The Postcode Schema",
+              "default": "",
+              "examples": [
+                "WD18 7SQ"
+              ],
+              "pattern": "^(.*)$"
+            }
+          }
+        },
+        "claimant_work_phone_number": {
+          "$id": "#/properties/data/properties/claimantWorkAddress/properties/claimant_work_phone_number",
+          "type": "string",
+          "title": "The Claimant_work_phone_number Schema",
+          "default": "",
+          "examples": [
+            "03333 423554"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "claimant_other_type": {
+      "$id": "#/properties/data/properties/claimantOtherType",
+      "type": "object",
+      "title": "The Claimantothertype Schema",
+      "required": [
+        "claimant_disabled",
+        "claimant_disabled_details"
+      ],
+      "properties": {
+        "claimant_disabled": {
+          "$id": "#/properties/data/properties/claimantOtherType/properties/claimant_disabled",
+          "type": "string",
+          "title": "The Claimant_disabled Schema",
+          "default": "",
+          "examples": [
+            "Yes"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "claimant_disabled_details": {
+          "$id": "#/properties/data/properties/claimantOtherType/properties/claimant_disabled_details",
+          "type": "string",
+          "title": "The Claimant_disabled_details Schema",
+          "default": "",
+          "examples": [
+            "My special needs are as follows"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "representative_claimant_type": {
+      "$id": "#/properties/data/properties/representativeClaimantType",
+      "type": "object",
+      "title": "The Representativeclaimanttype Schema",
+      "required": [
+        "representative_occupation",
+        "name_of_organisation",
+        "name_of_representative",
+        "representative_address",
+        "representative_phone_number",
+        "representative_mobile_number",
+        "representative_email_address",
+        "representative_dx"
+      ],
+      "properties": {
+        "representative_occupation": {
+          "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_occupation",
+          "type": "string",
+          "title": "The Representative_occupation Schema",
+          "default": "",
+          "examples": [
+            "Solicitor"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "name_of_organisation": {
+          "$id": "#/properties/data/properties/representativeClaimantType/properties/name_of_organisation",
+          "type": "string",
+          "title": "The Name_of_organisation Schema",
+          "default": "",
+          "examples": [
+            "transform innovative interfaces"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "name_of_representative": {
+          "$id": "#/properties/data/properties/representativeClaimantType/properties/name_of_representative",
+          "type": "string",
+          "title": "The Name_of_representative Schema",
+          "default": "",
+          "examples": [
+            "Candice McCullough"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "representative_address": {
+          "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_address",
+          "type": "object",
+          "title": "The Representative_address Schema",
+          "required": [
+            "AddressLine1",
+            "AddressLine2",
+            "PostTown",
+            "County",
+            "PostCode"
+          ],
+          "properties": {
+            "AddressLine1": {
+              "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_address/properties/AddressLine1",
+              "type": "string",
+              "title": "The Addressline1 Schema",
+              "default": "",
+              "examples": [
+                "106"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "AddressLine2": {
+              "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_address/properties/AddressLine2",
+              "type": "string",
+              "title": "The Addressline2 Schema",
+              "default": "",
+              "examples": [
+                "Mayfair"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "PostTown": {
+              "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_address/properties/PostTown",
+              "type": "string",
+              "title": "The Posttown Schema",
+              "default": "",
+              "examples": [
+                "London"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "County": {
+              "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_address/properties/County",
+              "type": "string",
+              "title": "The County Schema",
+              "default": "",
+              "examples": [
+                "Greater London"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "PostCode": {
+              "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_address/properties/PostCode",
+              "type": "string",
+              "title": "The Postcode Schema",
+              "default": "",
+              "examples": [
+                "SW1H 9PP"
+              ],
+              "pattern": "^(.*)$"
+            }
+          }
+        },
+        "representative_phone_number": {
+          "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_phone_number",
+          "type": "string",
+          "title": "The Representative_phone_number Schema",
+          "default": "",
+          "examples": [
+            "01111 123456"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "representative_mobile_number": {
+          "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_mobile_number",
+          "type": "string",
+          "title": "The Representative_mobile_number Schema",
+          "default": "",
+          "examples": [
+            "02222 654321"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "representative_email_address": {
+          "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_email_address",
+          "type": "string",
+          "title": "The Representative_email_address Schema",
+          "default": "",
+          "examples": [
+            "sivvoy.taing@hmcts.net"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "representative_dx": {
+          "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_dx",
+          "type": "string",
+          "title": "The Representative_dx Schema",
+          "default": "",
+          "examples": [
+            "dx1234567890"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "respondent_for_collection": {
+      "$id": "#/properties/data/properties/respondentCollection/items",
+      "type": "object",
+      "title": "The Items Schema",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "$id": "#/properties/data/properties/respondentCollection/items/properties/value",
+          "type": "object",
+          "title": "The Value Schema",
+          "required": [
+            "respondent_name",
+            "respondent_address",
+            "respondent_phone1",
+            "respondent_ACAS",
+            "respondent_ACAS_question"
+          ],
+          "properties": {
+            "respondent_name": {
+              "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_name",
+              "type": "string",
+              "title": "The Respondent_name Schema",
+              "default": "",
+              "examples": [
+                "Becker-Hartmann"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "respondent_address": {
+              "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_address",
+              "type": "object",
+              "title": "The Respondent_address Schema",
+              "required": [
+                "AddressLine1",
+                "AddressLine2",
+                "PostTown",
+                "County",
+                "PostCode"
+              ],
+              "properties": {
+                "AddressLine1": {
+                  "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_address/properties/AddressLine1",
+                  "type": "string",
+                  "title": "The Addressline1 Schema",
+                  "default": "",
+                  "examples": [
+                    "324"
+                  ],
+                  "pattern": "^(.*)$"
+                },
+                "AddressLine2": {
+                  "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_address/properties/AddressLine2",
+                  "type": "string",
+                  "title": "The Addressline2 Schema",
+                  "default": "",
+                  "examples": [
+                    "Merl Estate"
+                  ],
+                  "pattern": "^(.*)$"
+                },
+                "PostTown": {
+                  "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_address/properties/PostTown",
+                  "type": "string",
+                  "title": "The Posttown Schema",
+                  "default": "",
+                  "examples": [
+                    "London"
+                  ],
+                  "pattern": "^(.*)$"
+                },
+                "County": {
+                  "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_address/properties/County",
+                  "type": "string",
+                  "title": "The County Schema",
+                  "default": "",
+                  "examples": [
+                    "Greater London"
+                  ],
+                  "pattern": "^(.*)$"
+                },
+                "PostCode": {
+                  "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_address/properties/PostCode",
+                  "type": "string",
+                  "title": "The Postcode Schema",
+                  "default": "",
+                  "examples": [
+                    "SW1H 9QR"
+                  ],
+                  "pattern": "^(.*)$"
+                }
+              }
+            },
+            "respondent_phone1": {
+              "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_phone1",
+              "type": "null",
+              "title": "The Respondent_phone1 Schema",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "respondent_ACAS": {
+              "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_ACAS",
+              "type": "string",
+              "title": "The Respondent_acas Schema",
+              "default": "",
+              "examples": [
+                "AC123456/78/90"
+              ],
+              "pattern": "^(.*)$"
+            },
+            "respondent_ACAS_question": {
+              "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_ACAS_question",
+              "type": "string",
+              "title": "The Respondent_acas_question Schema",
+              "default": "",
+              "examples": [
+                "Yes"
+              ],
+              "pattern": "^(.*)$"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "The case data",
+  "required": [
+    "receiptDate",
+    "feeGroupReference",
+    "claimant_TypeOfClaimant",
+    "claimantIndType",
+    "claimantType",
+    "caseType",
+    "respondentSumType",
+    "claimantWorkAddress",
+    "respondentCollection",
+    "claimantOtherType",
+    "claimantRepresentedQuestion",
+    "representativeClaimantType"
+  ],
+  "properties": {
+    "receiptDate": {
+      "type": "string",
+      "title": "The Receipt date Schema",
+      "default": "",
+      "examples": [
+        "2019-06-21"
+      ],
+      "pattern": "^(\\d{4}-\\d{2}-\\d{2})$"
+    },
+    "feeGroupReference": {
+      "type": "string",
+      "title": "The fee group reference",
+      "default": "",
+      "examples": [
+        "332000000200"
+      ],
+      "pattern": "^(\\d{12})$"
+    },
+    "claimant_TypeOfClaimant": {
+      "type": "string",
+      "title": "The type of claimant Schema",
+      "default": "",
+      "examples": [
+        "Individual",
+        "Company"
+      ],
+      "enum": ["Individual", "Company"]
+    },
+    "claimantIndType": { "$ref": "#/definitions/claimant_ind_type"},
+    "claimantType": { "$ref": "#/definitions/claimant_type"},
+    "caseType": {
+      "$id": "#/properties/data/properties/caseType",
+      "type": "string",
+      "title": "The case type",
+      "default": "",
+      "examples": [
+        "Single",
+        "Multiple"
+      ],
+      "enum": ["Single", "Multiple"]
+    },
+    "respondentSumType": { "$ref": "#/definitions/respondent_sum_type" },
+    "claimantWorkAddress": { "$ref": "#/definitions/claimant_work_address"},
+    "respondentCollection": {
+      "$id": "#/properties/data/properties/respondentCollection",
+      "type": "array",
+      "title": "The Respondent collection Schema",
+      "items":{ "$ref": "#/definitions/respondent_for_collection"}
+    },
+    "claimantOtherType": { "$ref": "#/definitions/claimant_other_type"},
+    "claimantRepresentedQuestion": {
+      "$id": "#/properties/data/properties/claimantRepresentedQuestion",
+      "type": "string",
+      "title": "The Claimantrepresentedquestion Schema",
+      "default": "",
+      "examples": [
+        "Yes",
+        "No"
+      ],
+      "enum": ["Yes", "No"]
+    },
+    "representativeClaimantType": { "$ref": "#/definitions/representative_claimant_type"}
+  }
+}

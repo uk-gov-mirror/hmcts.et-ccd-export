@@ -12,7 +12,7 @@ FactoryBot.define do
       gender { "Male" }
       date_of_birth { "1982-11-21" }
       fax_number { nil }
-      special_needs { nil }
+      special_needs { "My special needs are as follows" }
     end
   end
 end

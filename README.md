@@ -72,6 +72,43 @@ The application must be configured to use the same redis details as the API serv
     RAVEN_SSL_VERIFICATION=false
     ```
     
+6. Configuration for CCD
+
+    There are 3 base urls which have defaults to allow the system to work alongside ccd-docker.
+    These will need configuring in real environments to point to a real CCD
+    
+    ```
+    CCD_AUTH_BASE_URL=<service-auth-provider-api base URL>
+    CCD_IDAM_BASE_URL=<idam-api base URL>
+    CCD_DATA_STORE_BASE_URL=<ccd-data-store-api base URL>
+    ```
+    
+    Also, the 'jurisdiction id' (jid) can be changed from its default (EMPLOYMENT) as follows
+    
+    ```
+    CCD_JURISDICTION_ID=<jurisdiction id>
+    ```
+    
+    The 'microservice' that is used to get a token in idam is 'ccd_gw' as standard.  To change
+    this do :-
+    
+    ```
+    CCD_MICROSERVICE_ID=<microservice>
+    ```
+    
+    and
+    
+    ```
+    CCD_MICROSERVICE_SECRET=<microservice-secret>
+    ```
+    
+    Hopefully, this will only be required in the short term for
+    ccd-docker which still uses TIDAM.  Note that this defaults to 
+    true which is correct for normal environments
+    
+    ```
+    CCD_USE_SIDAM=false
+    ```
 
 ## Running
 

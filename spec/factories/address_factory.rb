@@ -5,5 +5,13 @@ FactoryBot.define do
     locality { 'locality' }
     county { 'county' }
     post_code { 'post code' }
+
+    trait :with_uk_country do
+      country { 'United Kingdom' }
+    end
+
+    trait :with_other_country do
+      country { 'Outside United Kingdom' }
+    end
   end
 end
