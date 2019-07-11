@@ -81,6 +81,7 @@ The application must be configured to use the same redis details as the API serv
     CCD_AUTH_BASE_URL=<service-auth-provider-api base URL>
     CCD_IDAM_BASE_URL=<idam-api base URL>
     CCD_DATA_STORE_BASE_URL=<ccd-data-store-api base URL>
+
     ```
     
     Also, the 'jurisdiction id' (jid) can be changed from its default (EMPLOYMENT) as follows
@@ -101,13 +102,13 @@ The application must be configured to use the same redis details as the API serv
     ```
     CCD_MICROSERVICE_SECRET=<microservice-secret>
     ```
-    
-    Hopefully, this will only be required in the short term for
-    ccd-docker which still uses TIDAM.  Note that this defaults to 
-    true which is correct for normal environments
-    
+
+    When a case is created, it is owned by a particular idam user.  The username
+    and password is required below:
+
     ```
-    CCD_USE_SIDAM=false
+    CCD_SIDAM_USERNAME=<the username of the idam user to create cases for>
+    CCD_SIDAM_PASSWORD=<the password for the above>
     ```
 
 ## Running
