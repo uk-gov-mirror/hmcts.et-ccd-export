@@ -33,7 +33,7 @@ FactoryBot.define do
         locality: 'keelingborough',
         county: 'hawaii',
         post_code: 'yy9a 2la'
-      date_of_birth { Date.parse('06/07/1957') }
+      date_of_birth { "1957-07-06" }
     end
 
     trait :csv_diana_flatley do
@@ -46,7 +46,7 @@ FactoryBot.define do
         locality: 'west jewelstad',
         county: 'montana',
         post_code: 'r8p 0jb'
-      date_of_birth { Date.parse('24/09/1986') }
+      date_of_birth { "1986-09-24" }
     end
 
     trait :csv_mariana_mccullough do
@@ -59,7 +59,7 @@ FactoryBot.define do
         locality: 'east oliverton',
         county: 'south carolina',
         post_code: 'uh2 4na'
-      date_of_birth { Date.parse('10/08/1992') }
+      date_of_birth { "1992-08-10" }
     end
 
     trait :csv_eden_upton do
@@ -72,7 +72,7 @@ FactoryBot.define do
         locality: 'west roxane',
         county: 'new mexico',
         post_code: 'pd3p 8ns'
-      date_of_birth { Date.parse('09/01/1965') }
+      date_of_birth { "1965-01-09" }
     end
 
     trait :csv_annie_schulist do
@@ -85,7 +85,7 @@ FactoryBot.define do
         locality: 'amaliahaven',
         county: 'washington',
         post_code: 'f3 6nl'
-      date_of_birth { Date.parse('19/07/1988') }
+      date_of_birth { "1988-07-19" }
     end
 
     trait :csv_thad_johns do
@@ -98,7 +98,7 @@ FactoryBot.define do
         locality: 'lake valentin',
         county: 'new jersey',
         post_code: 'rt49 2qa'
-      date_of_birth { Date.parse('14/06/1993') }
+      date_of_birth { "1993-06-14" }
     end
 
     trait :csv_coleman_kreiger do
@@ -111,7 +111,7 @@ FactoryBot.define do
         locality: 'emmanuelhaven',
         county: 'alaska',
         post_code: 'td6b 6jj'
-      date_of_birth { Date.parse('12/05/1960') }
+      date_of_birth { "1960-05-12" }
     end
 
     trait :csv_jenson_deckow do
@@ -124,7 +124,7 @@ FactoryBot.define do
         locality: 'south candacebury',
         county: 'arkansas',
         post_code: 'u0p 6al'
-      date_of_birth { Date.parse('27/04/1970') }
+      date_of_birth { "1970-04-27" }
     end
 
     trait :csv_darien_bahringer do
@@ -137,7 +137,7 @@ FactoryBot.define do
         locality: 'kihnview',
         county: 'hawaii',
         post_code: 'z2e 3wl'
-      date_of_birth { Date.parse('29/06/1958') }
+      date_of_birth { "1958-06-29" }
     end
 
     trait :csv_eulalia_hammes do
@@ -150,7 +150,7 @@ FactoryBot.define do
         locality: 'south ottis',
         county: 'idaho',
         post_code: 'kg2 5aj'
-      date_of_birth { Date.parse('04/10/1998') }
+      date_of_birth { "1998-10-04" }
     end
 
   end

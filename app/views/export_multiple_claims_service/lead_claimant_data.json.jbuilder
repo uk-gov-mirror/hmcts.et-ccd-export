@@ -44,6 +44,7 @@ json.set! 'claimantWorkAddress' do
       json.set! 'AddressLine2', claim.dig('primary_respondent', 'work_address', 'street')
       json.set! 'PostTown', claim.dig('primary_respondent', 'work_address', 'locality')
       json.set! 'County', claim.dig('primary_respondent', 'work_address', 'county')
+      json.set! 'Country', nil
       json.set! 'PostCode', claim.dig('primary_respondent', 'work_address', 'post_code')
     end
     json.set! 'claimant_work_phone_number', claim.dig('primary_respondent', 'work_address_telephone_number')

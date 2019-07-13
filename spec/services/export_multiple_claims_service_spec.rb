@@ -36,7 +36,7 @@ RSpec.describe ExportMultipleClaimsService do
     end
 
     def secondaryClaimantTypeMatcher(claimant)
-      a_hash_including 'claimant_addressUK' => address_matcher(claimant.address),
+      a_hash_including 'claimant_addressUK' => address_matcher(claimant.address, has_country: false),
         'claimant_phone_number' => nil,
         'claimant_mobile_number' => nil,
         'claimant_email_address' => nil,
@@ -50,7 +50,7 @@ RSpec.describe ExportMultipleClaimsService do
       }
       if claim.employment_details.present?
         hash_for_comparison.merge! \
-          'claimant_employed_currently' => currently_employed?(claim),
+          'claimant_employed_currently' => currently_employed?(claim) ? 'Yes' : 'No',
           'claimant_occupation' => claim.employment_details.job_title,
           'claimant_employed_from' => claim.employment_details.start_date,
           'claimant_employed_to' => claim.employment_details.end_date,
@@ -60,14 +60,22 @@ RSpec.describe ExportMultipleClaimsService do
       a_hash_including hash_for_comparison
     end
 
-    def secondaryClaimantOtherTypeMatcher(claimant)
-      eq({})
+    def primaryClaimantWorkAddressMatcher(claimant, claim)
+      address = claim.primary_respondent.work_address.present? ? claim.primary_respondent.work_address : claim.primary_respondent.address
+      a_hash_including('claimant_work_address' => address_matcher(address, has_country: false))
     end
 
     def currently_employed?(claim)
       return nil unless claim.employment_details.present?
 
       claim.employment_details.start_date.present? && (claim.employment_details.end_date.nil? || Date.parse(claim.employment_details.end_date) > Date.today)
+    end
+
+    RSpec::Matchers.define :json_matching do |sub_matcher|
+      match do |actual|
+        json = JSON.parse(actual)
+        expect(json).to sub_matcher
+      end
     end
 
     context 'with secondary claimants from csv file' do
@@ -92,7 +100,7 @@ RSpec.describe ExportMultipleClaimsService do
 
         # Assert - Calculate the expected json and check for it
         claimant_count = example_export.resource.secondary_claimants.length + 1
-        json_matcher = a_hash_including 'feeGroupReference' => example_export.resource.reference
+        json_matcher = json_matching(a_hash_including 'feeGroupReference' => example_export.resource.reference)
         expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).exactly(claimant_count).times
       end
 
@@ -101,7 +109,7 @@ RSpec.describe ExportMultipleClaimsService do
         service.call(example_export.as_json)
 
         # Assert - Calculate the expected json and check for it
-        json_matcher = a_hash_including 'claimantIndType' => primaryClaimantIndTypeMatcher(example_export.resource.primary_claimant)
+        json_matcher = json_matching(a_hash_including 'claimantIndType' => primaryClaimantIndTypeMatcher(example_export.resource.primary_claimant))
         expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
       end
 
@@ -110,7 +118,7 @@ RSpec.describe ExportMultipleClaimsService do
         service.call(example_export.as_json)
 
         # Assert - Calculate the expected json and check for it
-        json_matcher = a_hash_including 'claimantType' => primaryClaimantTypeMatcher(example_export.resource.primary_claimant)
+        json_matcher = json_matching(a_hash_including 'claimantType' => primaryClaimantTypeMatcher(example_export.resource.primary_claimant))
         expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
       end
 
@@ -119,9 +127,20 @@ RSpec.describe ExportMultipleClaimsService do
         service.call(example_export.as_json)
 
         # Assert - Calculate the expected json and check for it
-        json_matcher = a_hash_including 'claimantType' => primaryClaimantOtherTypeMatcher(example_export.resource.primary_claimant, example_export.resource)
+        json_matcher = json_matching(a_hash_including 'claimantOtherType' => primaryClaimantOtherTypeMatcher(example_export.resource.primary_claimant, example_export.resource))
         expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
       end
+
+      it 'schedules the primary claimant with the correct claimantWorkAddress via the supervisor' do
+        # Act - Call the service
+        service.call(example_export.as_json)
+
+        # Assert - Calculate the expected json and check for it
+        json_matcher = json_matching(a_hash_including 'claimantWorkAddress' => primaryClaimantWorkAddressMatcher(example_export.resource.primary_claimant, example_export.resource))
+        expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
+      end
+
+
 
 
 
@@ -131,7 +150,7 @@ RSpec.describe ExportMultipleClaimsService do
         service.call(example_export.as_json)
 
         example_export.resource.secondary_claimants.each do |claimant|
-          json_matcher = a_hash_including 'claimantIndType' => secondaryClaimantIndTypeMatcher(claimant)
+          json_matcher = json_matching(a_hash_including 'claimantIndType' => secondaryClaimantIndTypeMatcher(claimant))
           expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
         end
       end
@@ -141,19 +160,31 @@ RSpec.describe ExportMultipleClaimsService do
         service.call(example_export.as_json)
 
         example_export.resource.secondary_claimants.each do |claimant|
-          json_matcher = a_hash_including 'claimantType' => secondaryClaimantTypeMatcher(claimant)
+          json_matcher = json_matching(a_hash_including 'claimantType' => secondaryClaimantTypeMatcher(claimant))
           expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
         end
       end
 
-      it 'schedules the secondary claimants with  the correct claimantOtherType' do
+      it 'schedules the secondary claimants with the correct claimantOtherType' do
         # Act - Call the service
         service.call(example_export.as_json)
 
-        example_export.resource.secondary_claimants.each do |claimant|
-          json_matcher = a_hash_including 'claimantOtherType' => secondaryClaimantOtherTypeMatcher(claimant)
-          expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
-        end
+        # Assert - all 'n' times the job has been added, it should have had empty claimantOtherType
+        json_matcher = json_matching(a_hash_including 'claimantOtherType' => {})
+        expect(mock_supervisor).to have_received(:add_job).
+          with(json_matcher, group_name: example_export.resource.reference).
+          exactly(example_export.resource.secondary_claimants.length).times
+      end
+
+      it 'schedules the secondary claimants with the correct claimantWorkAddress' do
+        # Act - Call the service
+        service.call(example_export.as_json)
+
+        # Assert - all 'n' times the job has been added, it should have and empty claimantWorkAddress for all secondaries
+        json_matcher = json_matching(a_hash_including 'claimantWorkAddress' => {})
+        expect(mock_supervisor).to have_received(:add_job).
+          with(json_matcher, group_name: example_export.resource.reference).
+          exactly(example_export.resource.secondary_claimants.length).times
       end
 
       it 'must not modify original data' do

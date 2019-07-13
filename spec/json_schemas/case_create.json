@@ -273,6 +273,7 @@
             "AddressLine2",
             "PostTown",
             "County",
+            "Country",
             "PostCode"
           ],
           "properties": {
@@ -315,6 +316,15 @@
                 "Greater London"
               ],
               "pattern": "^(.*)$"
+            },
+            "Country": {
+              "$id": "#/properties/data/properties/respondentSumType/properties/respondent_address/properties/Country",
+              "type": "null",
+              "title": "The Country Schema",
+              "default": null,
+              "examples": [
+                null
+              ]
             },
             "PostCode": {
               "$id": "#/properties/data/properties/respondentSumType/properties/respondent_address/properties/PostCode",
@@ -368,6 +378,7 @@
             "AddressLine2",
             "PostTown",
             "County",
+            "Country",
             "PostCode"
           ],
           "properties": {
@@ -410,6 +421,15 @@
                 "Greater London"
               ],
               "pattern": "^(.*)$"
+            },
+            "Country": {
+              "$id": "#/properties/data/properties/claimantWorkAddress/properties/claimant_work_address/properties/Country",
+              "type": "null",
+              "title": "The Country Schema",
+              "default": null,
+              "examples": [
+                null
+              ]
             },
             "PostCode": {
               "$id": "#/properties/data/properties/claimantWorkAddress/properties/claimant_work_address/properties/PostCode",
@@ -520,6 +540,7 @@
             "AddressLine2",
             "PostTown",
             "County",
+            "Country",
             "PostCode"
           ],
           "properties": {
@@ -562,6 +583,15 @@
                 "Greater London"
               ],
               "pattern": "^(.*)$"
+            },
+            "Country": {
+              "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_address/properties/Country",
+              "type": "null",
+              "title": "The Country Schema",
+              "default": null,
+              "examples": [
+                null
+              ]
             },
             "PostCode": {
               "$id": "#/properties/data/properties/representativeClaimantType/properties/representative_address/properties/PostCode",
@@ -656,6 +686,7 @@
                 "AddressLine2",
                 "PostTown",
                 "County",
+                "Country",
                 "PostCode"
               ],
               "properties": {
@@ -698,6 +729,15 @@
                     "Greater London"
                   ],
                   "pattern": "^(.*)$"
+                },
+                "Country": {
+                  "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_address/properties/Country",
+                  "type": "null",
+                  "title": "The County Schema",
+                  "default": null,
+                  "examples": [
+                    null
+                  ]
                 },
                 "PostCode": {
                   "$id": "#/properties/data/properties/respondentCollection/items/properties/value/properties/respondent_address/properties/PostCode",
