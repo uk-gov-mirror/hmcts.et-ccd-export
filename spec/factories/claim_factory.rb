@@ -7,7 +7,7 @@ FactoryBot.define do
       primary_respondent_attrs { {} }
       primary_claimant_attrs { {} }
       primary_claimant_traits { [:default] }
-      secondary_claimant_traits { [:mr_first_last] }
+      secondary_claimant_traits { [:from_csv] }
       secondary_respondent_traits { [:basic] }
       secondary_respondent_attrs { {} }
       primary_representative_traits { [:full] }
@@ -83,19 +83,19 @@ FactoryBot.define do
       default
       secondary_claimants do
         [
-          build(:claimant, :tamara_swift),
-          build(:claimant, :diana_flatley),
-          build(:claimant, :mariana_mccullough),
-          build(:claimant, :eden_upton),
-          build(:claimant, :annie_schulist),
-          build(:claimant, :thad_johns),
-          build(:claimant, :coleman_kreiger),
-          build(:claimant, :jenson_deckow),
-          build(:claimant, :darien_bahringer),
-          build(:claimant, :eulalia_hammes)
+          build(:claimant, :csv_tamara_swift),
+          build(:claimant, :csv_diana_flatley),
+          build(:claimant, :csv_mariana_mccullough),
+          build(:claimant, :csv_eden_upton),
+          build(:claimant, :csv_annie_schulist),
+          build(:claimant, :csv_thad_johns),
+          build(:claimant, :csv_coleman_kreiger),
+          build(:claimant, :csv_jenson_deckow),
+          build(:claimant, :csv_darien_bahringer),
+          build(:claimant, :csv_eulalia_hammes)
         ]
       end
-      uploaded_files { [build(:uploaded_file, :example_data), build(:uploaded_file, :example_claim_claimants_csv)] }
+      uploaded_files { [build(:uploaded_file, :example_pdf), build(:uploaded_file, :example_claim_claimants_csv)] }
     end
   end
 end

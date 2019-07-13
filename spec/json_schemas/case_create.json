@@ -772,6 +772,14 @@
       ],
       "pattern": "^(\\d{4}-\\d{2}-\\d{2})$"
     },
+    "state": {
+      "type": "string",
+      "title": "The state of the case (optional)",
+      "examples": [
+        "Submitted"
+      ],
+      "enum": ["Pending"]
+    },
     "feeGroupReference": {
       "type": "string",
       "title": "The fee group reference",

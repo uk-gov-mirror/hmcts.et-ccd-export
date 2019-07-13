@@ -156,11 +156,15 @@
 =end
 FactoryBot.define do
   factory :export, class: ::EtCcdExport::Test::Json::Node do
+    transient do
+      claim_attrs { {} }
+      claim_traits { [:default] }
+    end
     external_system { build(:system) }
     resource { nil }
 
     trait :for_claim do
-      resource { build(:claim, :default) }
+      resource { build(:claim, *claim_traits, **claim_attrs) }
       resource_type { 'Claim' }
     end
   end
