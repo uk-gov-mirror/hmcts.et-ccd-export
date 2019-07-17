@@ -1,5 +1,6 @@
 class ExportMultiplesWorker
   include Sidekiq::Worker
+  sidekiq_options queue: 'external_system_ccd'
 
   def perform(ccd_data, case_type_id, primary = false, service: ExportMultipleClaimsService.new)
     data = service.export(ccd_data, case_type_id)
