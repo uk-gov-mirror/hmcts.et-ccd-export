@@ -156,8 +156,11 @@ RSpec.describe ExportMultipleClaimsService do
         service.call(example_export.as_json, worker: mock_worker_class, header_worker: mock_header_worker_class)
         ::Sidekiq::Worker.drain_all
 
-        # Assert - Check the worker has been queued
-        expect(mock_worker_calls).to eql presented_values.map {|data| [data, 'EmpTrib_MVP_1.0_Manc']}
+        # Assert - Check the worker has been queued, first time with the primary set to true
+        aggregate_failures 'validating calls' do
+          expect(mock_worker_calls.first).to eql(['{"claim"=>"1"}', 'EmpTrib_MVP_1.0_Manc', true])
+          expect(mock_worker_calls[1..-1]).to eql presented_values[1..-1].map {|data| [data, 'EmpTrib_MVP_1.0_Manc']}
+        end
       end
 
       it 'calls the presenter 11 times with the correct parameters' do

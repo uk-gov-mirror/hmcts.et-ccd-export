@@ -18,7 +18,7 @@ class ExportMultipleClaimsService
              header_worker: header_worker.name,
              multiples_case_type_id: multiples_case_type_id
     batch.jobs do
-      worker.perform_async presenter.present(export['resource'], claimant: export.dig('resource', 'primary_claimant'), lead_claimant: true), case_type_id
+      worker.perform_async presenter.present(export['resource'], claimant: export.dig('resource', 'primary_claimant'), lead_claimant: true), case_type_id, true
       export.dig('resource', 'secondary_claimants').each do |claimant|
         worker.perform_async presenter.present(export['resource'], claimant: claimant, lead_claimant: false), case_type_id
       end
