@@ -12,6 +12,7 @@ gem 'rails', '~> 5.2.3'
 gem 'sidekiq', '~> 5.2', '>= 5.2.7'
 gem 'sidekiq_alive', '~> 1.1'
 gem 'sidekiq-failures', '~> 1.0'
+gem 'sidekiq-batch', '~> 0.1.5'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
@@ -24,8 +25,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'addressable', '~> 2.6'
 gem 'rest-client', '~> 2.0', '>= 2.0.2'
 gem 'jbuilder', '~> 2.9', '>= 2.9.1'
-gem 'et_ccd_client', git: 'https://github.com/hmcts/et-ccd-client-ruby.git', tag: 'v0.1.19'
-#gem 'et_ccd_client', path: '/Users/garytaylor/Sync/ruby/moj/et/et-ccd-client-ruby'
+gem 'et_ccd_client', git: 'https://github.com/hmcts/et-ccd-client-ruby.git', tag: 'v0.1.21'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -39,6 +39,7 @@ group :test do
   gem 'et_fake_ccd', '~> 0.1'
   gem 'json_matchers', '~> 0.11.0'
   gem 'ice_nine', '~> 0.11.2'
+  gem 'mock_redis', '~> 0.21.0'
 end
 
 group :development do

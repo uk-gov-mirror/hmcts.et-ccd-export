@@ -9,6 +9,7 @@ FactoryBot.define do
         build(:system_configuration, key: 'user_id', value: '22'),
         build(:system_configuration, key: 'user_role', value: 'caseworker,caseworker-test,caseworker-employment-tribunal-manchester,caseworker-employment,caseworker-employment-tribunal-manchester-caseofficer,caseworker-publiclaw-localAuthority'),
         build(:system_configuration, key: 'case_type_id', value: 'EmpTrib_MVP_1.0_Manc'),
+        build(:system_configuration, key: 'multiples_case_type_id', value: 'CCD_Bulk_Action_Manc_v3'),
       ]
     end
     # config do

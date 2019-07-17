@@ -2,14 +2,6 @@ require 'rails_helper'
 RSpec.describe ExportClaimService do
   subject(:service) { described_class.new }
 
-  shared_context 'with stubbed ccd' do
-    before do
-      stub_request(:any, Addressable::Template.new(export.external_system.config[:idam_service_token_exchange_url])).to_rack(EtFakeCcd::Idam::ServiceTokenServer)
-      stub_request(:any, Addressable::Template.new(export.external_system.config[:idam_user_token_exchange_url])).to_rack(EtFakeCcd::Idam::UserTokenServer)
-      stub_request(:any, Addressable::Template.new(export.external_system.config[:create_case_url])).to_rack(EtFakeCcd::Server)
-      stub_request(:any, Addressable::Template.new(export.external_system.config[:initiate_case_url])).to_rack(EtFakeCcd::Server)
-    end
-  end
   describe '#call' do
     let(:export) { create(:export, :for_claim) }
     # include_context 'with stubbed ccd'

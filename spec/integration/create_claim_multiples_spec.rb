@@ -3,22 +3,43 @@ RSpec.describe "create claim" do
   subject(:worker) { ::EtExporter::ExportClaimWorker }
   subject(:multiples_worker) { ::ExportMultiplesWorker }
   let(:test_ccd_client) { EtCcdClient::UiClient.new.tap {|c| c.login(username: 'm@m.com', password: 'Pa55word11')} }
-  before do
-    stub_request(:any, /http:\/\/localhost:8080.*/).to_rack(EtFakeCcd::RootApp)
-  end
+  include_context 'with stubbed ccd'
 
-  it 'creates a multiples claim and many single claims in ccd' do
+  it 'creates a multiples claim referencing many single claims in ccd' do
     # Arrange - Produce the input JSON
     export = build(:export, :for_claim, claim_traits: [:default_multiple_claimants])
 
     # Act - Call the worker in the same way the application would (minus using redis)
     worker.perform_async(export.as_json.to_json)
-    worker.drain
+    Sidekiq::Worker.drain_all
 
     # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
-    multiples_worker.drain
     ccd_case = test_ccd_client.caseworker_search_latest_by_multiple_reference(export.resource.reference, case_type_id: 'CCD_Bulk_Action_Manc_v3')
-    expect(ccd_case['case_fields']).to include 'multipleReference' => export.resource.reference
+    aggregate_failures 'validating key fields' do
+      expect(ccd_case['case_fields']).to include 'multipleReference' => export.resource.reference
+      case_references = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
+      expect(case_references.length).to eql(export.resource.secondary_claimants.length + 1)
+      expect(case_references).to all be_an_instance_of(String)
+    end
+  end
+
+  it 'creates many single claims all with status of Pending' do
+    # Arrange - Produce the input JSON
+    export = build(:export, :for_claim, claim_traits: [:default_multiple_claimants])
+
+    # Act - Call the worker in the same way the application would (minus using redis)
+    worker.perform_async(export.as_json.to_json)
+    Sidekiq::Worker.drain_all
+
+    # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
+    ccd_case = test_ccd_client.caseworker_search_latest_by_multiple_reference(export.resource.reference, case_type_id: 'CCD_Bulk_Action_Manc_v3')
+    case_references = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
+    aggregate_failures 'validating key fields' do
+      case_references.each do |ref|
+        created_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(ref, case_type_id: 'EmpTrib_MVP_1.0_Manc')
+        expect(created_case['case_fields']).to include 'state' => 'Pending'
+      end
+    end
   end
 
   # it 'creates a claim in ccd that matches the schema' do

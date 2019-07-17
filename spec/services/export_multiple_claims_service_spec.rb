@@ -1,9 +1,14 @@
 require 'rails_helper'
-require 'ice_nine'  # For deep freezing
+require 'ice_nine'
+require 'securerandom'
 RSpec.describe ExportMultipleClaimsService do
-  subject(:service) { described_class.new(supervisor: mock_supervisor) }
+  subject(:service) { described_class.new presenter: mock_presenter, header_presenter: mock_header_presenter, envelope_presenter: mock_envelope_presenter }
 
-  let(:mock_supervisor) { class_spy('MultiplesSupervisorService') }
+  let(:mock_presenter) { class_spy(MultipleClaimsPresenter, present: '{"some"=>"json", "claim" => "data"}') }
+  let(:mock_header_presenter) do
+    self.class::MockHeaderPresenter = class_spy(MultipleClaimsHeaderPresenter, present: '{"some"=>"json","claim"=>"header"}')
+  end
+  let(:mock_envelope_presenter) { class_spy(MultipleClaimsEnvelopePresenter) }
 
   describe '#call' do
     def primaryClaimantIndTypeMatcher(claimant, has_gender: true)
@@ -25,10 +30,10 @@ RSpec.describe ExportMultipleClaimsService do
     def address_matcher(address, has_country: true)
       a_hash_including 'AddressLine1' => address.building,
                        'AddressLine2' => address.street,
-        'PostTown' => address.locality,
-        'County' => address.county,
-        'PostCode' => address.post_code,
-        'Country' => has_country && ['United Kingdom'].include?(address.country) ? address.country : nil
+                       'PostTown' => address.locality,
+                       'County' => address.county,
+                       'PostCode' => address.post_code,
+                       'Country' => has_country && ['United Kingdom'].include?(address.country) ? address.country : nil
     end
 
     def secondaryClaimantIndTypeMatcher(claimant)
@@ -37,10 +42,10 @@ RSpec.describe ExportMultipleClaimsService do
 
     def secondaryClaimantTypeMatcher(claimant)
       a_hash_including 'claimant_addressUK' => address_matcher(claimant.address, has_country: false),
-        'claimant_phone_number' => nil,
-        'claimant_mobile_number' => nil,
-        'claimant_email_address' => nil,
-        'claimant_contact_preference' => nil
+                       'claimant_phone_number' => nil,
+                       'claimant_mobile_number' => nil,
+                       'claimant_email_address' => nil,
+                       'claimant_contact_preference' => nil
     end
 
     def primaryClaimantOtherTypeMatcher(claimant, claim)
@@ -78,126 +83,290 @@ RSpec.describe ExportMultipleClaimsService do
       end
     end
 
-    context 'with secondary claimants from csv file' do
-      let(:example_export) { build(:export, :for_claim, claim_traits: [:default_multiple_claimants]) }
-
-      it 'requests supervision for each claimant including primary' do
-        # Act - Call the service
-        service.call(example_export.as_json)
-
-        # Assert - ensure the spy was called for each one
-        expect(mock_supervisor).to have_received(:supervise).with(group_name: example_export.resource.reference, count: example_export.resource.secondary_claimants.length + 1)
-      end
-
-      # The supervisor will receive an add_job call for each job it needs to supervise.
-      # This add_job is called with the json from the original ET JSON but modified
-      # so that the primary claimant is the secondary claimant of interest
-      # and the secondary claimants are empty.  This shrinks the json size down as the
-      # secondary claimants are not relevant - as each secondary claimant gets its own job
-      it 'schedules all claimants with the correct fee group references' do
-        # Act - Call the service
-        service.call(example_export.as_json)
-
-        # Assert - Calculate the expected json and check for it
-        claimant_count = example_export.resource.secondary_claimants.length + 1
-        json_matcher = json_matching(a_hash_including 'feeGroupReference' => example_export.resource.reference)
-        expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).exactly(claimant_count).times
-      end
-
-      it 'schedules the primary claimant with the correct claimantIndType via the supervisor' do
-        # Act - Call the service
-        service.call(example_export.as_json)
-
-        # Assert - Calculate the expected json and check for it
-        json_matcher = json_matching(a_hash_including 'claimantIndType' => primaryClaimantIndTypeMatcher(example_export.resource.primary_claimant))
-        expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
-      end
-
-      it 'schedules the primary claimant with the correct claimantType via the supervisor' do
-        # Act - Call the service
-        service.call(example_export.as_json)
-
-        # Assert - Calculate the expected json and check for it
-        json_matcher = json_matching(a_hash_including 'claimantType' => primaryClaimantTypeMatcher(example_export.resource.primary_claimant))
-        expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
-      end
-
-      it 'schedules the primary claimant with the correct claimantOtherType via the supervisor' do
-        # Act - Call the service
-        service.call(example_export.as_json)
-
-        # Assert - Calculate the expected json and check for it
-        json_matcher = json_matching(a_hash_including 'claimantOtherType' => primaryClaimantOtherTypeMatcher(example_export.resource.primary_claimant, example_export.resource))
-        expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
-      end
-
-      it 'schedules the primary claimant with the correct claimantWorkAddress via the supervisor' do
-        # Act - Call the service
-        service.call(example_export.as_json)
-
-        # Assert - Calculate the expected json and check for it
-        json_matcher = json_matching(a_hash_including 'claimantWorkAddress' => primaryClaimantWorkAddressMatcher(example_export.resource.primary_claimant, example_export.resource))
-        expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
-      end
-
-
-
-
-
-
-      it 'schedules the secondary claimants with  the correct claimantIndType' do
-        # Act - Call the service
-        service.call(example_export.as_json)
-
-        example_export.resource.secondary_claimants.each do |claimant|
-          json_matcher = json_matching(a_hash_including 'claimantIndType' => secondaryClaimantIndTypeMatcher(claimant))
-          expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
+    shared_context 'with mock workers' do
+      let(:mock_worker_class) do
+        calls = mock_worker_calls
+        instance = nil
+        reference = 1000001
+        self.class::MockWorker = Class.new do
+          include Sidekiq::Worker
+          define_singleton_method(:new) { instance ||= super() }
+          define_method :perform do |*args|
+            calls << args
+            Sidekiq.redis { |r| r.lpush("BID-#{bid.bid}-references", reference) }
+            reference += 1
+          end
         end
+        self.class::MockWorker
       end
 
-      it 'schedules the secondary claimants with  the correct claimantType' do
-        # Act - Call the service
-        service.call(example_export.as_json)
+      let(:mock_worker_calls) do
+        []
+      end
 
-        example_export.resource.secondary_claimants.each do |claimant|
-          json_matcher = json_matching(a_hash_including 'claimantType' => secondaryClaimantTypeMatcher(claimant))
-          expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
+      let(:mock_header_worker_class) do
+        instance = mock_header_worker
+        self.class::MockHeaderWorker = Class.new do
+          include Sidekiq::Worker
+          define_singleton_method(:new) { instance }
         end
+        self.class::MockHeaderWorker
       end
 
-      it 'schedules the secondary claimants with the correct claimantOtherType' do
-        # Act - Call the service
-        service.call(example_export.as_json)
-
-        # Assert - all 'n' times the job has been added, it should have had empty claimantOtherType
-        json_matcher = json_matching(a_hash_including 'claimantOtherType' => {})
-        expect(mock_supervisor).to have_received(:add_job).
-          with(json_matcher, group_name: example_export.resource.reference).
-          exactly(example_export.resource.secondary_claimants.length).times
-      end
-
-      it 'schedules the secondary claimants with the correct claimantWorkAddress' do
-        # Act - Call the service
-        service.call(example_export.as_json)
-
-        # Assert - all 'n' times the job has been added, it should have and empty claimantWorkAddress for all secondaries
-        json_matcher = json_matching(a_hash_including 'claimantWorkAddress' => {})
-        expect(mock_supervisor).to have_received(:add_job).
-          with(json_matcher, group_name: example_export.resource.reference).
-          exactly(example_export.resource.secondary_claimants.length).times
-      end
-
-      it 'must not modify original data' do
-        # Arrange - Deep freeze the original
-        data = example_export.as_json
-        IceNine.deep_freeze(data)
-
-        # Act - Call the service
-        action = -> { service.call(data) }
-
-        # Assert - Make sure it does not raise frozen error
-        expect(action).not_to raise_exception(FrozenError)
+      let(:mock_header_worker) do
+        fake_class_to_spy_on = Class.new do
+          include Sidekiq::Worker
+          define_method(:perform) { |*| }
+        end
+        instance_spy(fake_class_to_spy_on)
       end
     end
+
+    context 'with secondary claimants from csv file' do
+      include_context 'with mock workers'
+      let(:example_export) { build(:export, :for_claim, claim_traits: [:default_multiple_claimants]) }
+
+      it 'queues the header worker when done with the data from the header presenter' do
+        # Act - Call the service
+        service.call(example_export.as_json, worker: mock_worker_class, header_worker: mock_header_worker_class)
+        ::Sidekiq::Worker.drain_all
+
+        # Assert - Check the batch
+        expect(mock_header_worker).to have_received(:perform).with(example_export.resource.reference, match_array((1000001..(1000001 + example_export.resource.secondary_claimants.length)).to_a.map(&:to_s)), 'CCD_Bulk_Action_Manc_v3')
+      end
+
+      it 'queues the worker 11 times with the data from the presenter' do
+        # Arrange - Setup the presenter to return different values each time
+        presented_values = [
+          '{"claim"=>"1"}',
+          '{"claim"=>"2"}',
+          '{"claim"=>"3"}',
+          '{"claim"=>"4"}',
+          '{"claim"=>"5"}',
+          '{"claim"=>"6"}',
+          '{"claim"=>"7"}',
+          '{"claim"=>"8"}',
+          '{"claim"=>"9"}',
+          '{"claim"=>"10"}',
+          '{"claim"=>"11"}'
+        ]
+        allow(mock_presenter).to receive(:present).and_return(*presented_values)
+
+        # Act - Call the service
+        service.call(example_export.as_json, worker: mock_worker_class, header_worker: mock_header_worker_class)
+        ::Sidekiq::Worker.drain_all
+
+        # Assert - Check the worker has been queued
+        expect(mock_worker_calls).to eql presented_values.map {|data| [data, 'EmpTrib_MVP_1.0_Manc']}
+      end
+
+      it 'calls the presenter 11 times with the correct parameters' do
+        # Act - Call the service
+        service.call(example_export.as_json, worker: mock_worker_class, header_worker: mock_header_worker_class)
+        ::Sidekiq::Worker.drain_all
+
+        # Assert - Check the worker has been queued
+        aggregate_failures "validate all calls in one" do
+          expect(mock_presenter).to have_received(:present).exactly(example_export.resource.secondary_claimants.length + 1).times
+          expect(mock_presenter).to have_received(:present).with(example_export.resource.as_json, claimant: example_export.resource.primary_claimant.as_json, lead_claimant: true)
+          example_export.resource.secondary_claimants.each do |claimant|
+            expect(mock_presenter).to have_received(:present).with(example_export.resource.as_json, claimant: claimant.as_json, lead_claimant: false)
+          end
+        end
+      end
+
+      # # The supervisor will receive an add_job call for each job it needs to supervise.
+      # # This add_job is called with the json from the original ET JSON but modified
+      # # so that the primary claimant is the secondary claimant of interest
+      # # and the secondary claimants are empty.  This shrinks the json size down as the
+      # # secondary claimants are not relevant - as each secondary claimant gets its own job
+      # it 'schedules all claimants with the correct fee group references' do
+      #   # Act - Call the service
+      #   service.call(example_export.as_json)
+      #
+      #   # Assert - Calculate the expected json and check for it
+      #   claimant_count = example_export.resource.secondary_claimants.length + 1
+      #   json_matcher = json_matching(a_hash_including 'feeGroupReference' => example_export.resource.reference)
+      #   expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).exactly(claimant_count).times
+      # end
+      #
+      # it 'schedules the primary claimant with the correct claimantIndType via the supervisor' do
+      #   # Act - Call the service
+      #   service.call(example_export.as_json)
+      #
+      #   # Assert - Calculate the expected json and check for it
+      #   json_matcher = json_matching(a_hash_including 'claimantIndType' => primaryClaimantIndTypeMatcher(example_export.resource.primary_claimant))
+      #   expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
+      # end
+      #
+      # it 'schedules the primary claimant with the correct claimantType via the supervisor' do
+      #   # Act - Call the service
+      #   service.call(example_export.as_json)
+      #
+      #   # Assert - Calculate the expected json and check for it
+      #   json_matcher = json_matching(a_hash_including 'claimantType' => primaryClaimantTypeMatcher(example_export.resource.primary_claimant))
+      #   expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
+      # end
+      #
+      # it 'schedules the primary claimant with the correct claimantOtherType via the supervisor' do
+      #   # Act - Call the service
+      #   service.call(example_export.as_json)
+      #
+      #   # Assert - Calculate the expected json and check for it
+      #   json_matcher = json_matching(a_hash_including 'claimantOtherType' => primaryClaimantOtherTypeMatcher(example_export.resource.primary_claimant, example_export.resource))
+      #   expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
+      # end
+      #
+      # it 'schedules the primary claimant with the correct claimantWorkAddress via the supervisor' do
+      #   # Act - Call the service
+      #   service.call(example_export.as_json)
+      #
+      #   # Assert - Calculate the expected json and check for it
+      #   json_matcher = json_matching(a_hash_including 'claimantWorkAddress' => primaryClaimantWorkAddressMatcher(example_export.resource.primary_claimant, example_export.resource))
+      #   expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
+      # end
+      #
+      #
+      #
+      #
+      #
+      #
+      # it 'schedules the secondary claimants with  the correct claimantIndType' do
+      #   # Act - Call the service
+      #   service.call(example_export.as_json)
+      #
+      #   example_export.resource.secondary_claimants.each do |claimant|
+      #     json_matcher = json_matching(a_hash_including 'claimantIndType' => secondaryClaimantIndTypeMatcher(claimant))
+      #     expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
+      #   end
+      # end
+      #
+      # it 'schedules the secondary claimants with  the correct claimantType' do
+      #   # Act - Call the service
+      #   service.call(example_export.as_json)
+      #
+      #   example_export.resource.secondary_claimants.each do |claimant|
+      #     json_matcher = json_matching(a_hash_including 'claimantType' => secondaryClaimantTypeMatcher(claimant))
+      #     expect(mock_supervisor).to have_received(:add_job).with(json_matcher, group_name: example_export.resource.reference).once
+      #   end
+      # end
+      #
+      # it 'schedules the secondary claimants with the correct claimantOtherType' do
+      #   # Act - Call the service
+      #   service.call(example_export.as_json)
+      #
+      #   # Assert - all 'n' times the job has been added, it should have had empty claimantOtherType
+      #   json_matcher = json_matching(a_hash_including 'claimantOtherType' => {})
+      #   expect(mock_supervisor).to have_received(:add_job).
+      #     with(json_matcher, group_name: example_export.resource.reference).
+      #     exactly(example_export.resource.secondary_claimants.length).times
+      # end
+      #
+      # it 'schedules the secondary claimants with the correct claimantWorkAddress' do
+      #   # Act - Call the service
+      #   service.call(example_export.as_json)
+      #
+      #   # Assert - all 'n' times the job has been added, it should have and empty claimantWorkAddress for all secondaries
+      #   json_matcher = json_matching(a_hash_including 'claimantWorkAddress' => {})
+      #   expect(mock_supervisor).to have_received(:add_job).
+      #     with(json_matcher, group_name: example_export.resource.reference).
+      #     exactly(example_export.resource.secondary_claimants.length).times
+      # end
+      #
+      # it 'must not modify original data' do
+      #   # Arrange - Deep freeze the original
+      #   data = example_export.as_json
+      #   IceNine.deep_freeze(data)
+      #
+      #   # Act - Call the service
+      #   action = -> { service.call(data) }
+      #
+      #   # Assert - Make sure it does not raise frozen error
+      #   expect(action).not_to raise_exception(FrozenError)
+      # end
+    end
+  end
+
+  describe '#export' do
+    include_context 'with stubbed ccd'
+    let(:test_ccd_client) { EtCcdClient::UiClient.new.tap {|c| c.login(username: 'm@m.com', password: 'Pa55word11')} }
+    let(:example_ccd_data) do
+      {
+        "receiptDate": "2019-06-12",
+        "feeGroupReference": "222000000100",
+        "claimant_TypeOfClaimant": "Individual",
+        "claimantIndType": {
+          "claimant_title1": "Mrs",
+          "claimant_first_names": "tamara",
+          "claimant_last_name": "swift",
+          "claimant_date_of_birth": "1957-07-06",
+          "claimant_gender": nil
+        },
+        "claimantType": {
+          "claimant_addressUK": {
+            "AddressLine1": "71088",
+            "AddressLine2": "nova loaf",
+            "PostTown": "keelingborough",
+            "County": "hawaii",
+            "Country": nil,
+            "PostCode": "yy9a 2la"
+          },
+          "claimant_phone_number": nil,
+          "claimant_mobile_number": nil,
+          "claimant_email_address": nil,
+          "claimant_contact_preference": nil
+        },
+        "caseType": "Single",
+        "respondentSumType": {
+          "respondent_name": "dodgy_co",
+          "respondent_ACAS_question": "Yes",
+          "respondent_address": {
+            "AddressLine1": "1",
+            "AddressLine2": "street",
+            "PostTown": "locality",
+            "County": "county",
+            "PostCode": "post code"
+          },
+          "respondent_phone1": "01234 567890",
+          "respondent_ACAS": "AC123456/78/90"
+        },
+        "claimantWorkAddress": {},
+        "respondentCollection": [],
+        "claimantOtherType": {},
+        "claimantRepresentedQuestion": "Yes",
+        "representativeClaimantType": {
+          "representative_occupation": "Solicitor",
+          "name_of_organisation": "Org name",
+          "name_of_representative": "Rep Name",
+          "representative_address": {
+            "AddressLine1": "1",
+            "AddressLine2": "street",
+            "PostTown": "locality",
+            "County": "county",
+            "PostCode": "post code"
+          },
+          "representative_phone_number": "01234 565899",
+          "representative_mobile_number": "07771 666555",
+          "representative_email_address": "test@email.com",
+          "representative_dx": "dx1234567890"
+        }
+      }
+    end
+
+    it 'stores the data in fake ccd' do
+      # Arrange - Setup the envelope presenter to do what it should do (roughly - just to keep fake ccd happy)
+      allow(mock_envelope_presenter).to receive(:present) do |data, event_token:|
+        <<-JSON
+          {"data": #{data},"event": {"id": "initiateCase"},"event_token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJ1cHY5dTBvb2o3NWUzdG1kbW43YThtaGNoZSIsInN1YiI6IjY4OGNmYjVjLTU2MTctNDE0Yi04MzY1LTdlMTY4ODRmNGZiNyIsImlhdCI6MTU2MzE4NDA2NSwiZXZlbnQtaWQiOiJpbml0aWF0ZUNhc2UiLCJjYXNlLXR5cGUtaWQiOiJFbXBUcmliX01WUF8xLjBfTWFuYyIsImp1cmlzZGljdGlvbi1pZCI6IkVNUExPWU1FTlQiLCJjYXNlLXZlcnNpb24iOiJiZjIxYTllOGZiYzVhMzg0NmZiMDViNGZhMDg1OWUwOTE3YjIyMDJmIn0.n-cR9MXeIuCIr1LSJtJW4mTaX_slK9qB4JNl3ggsda4"}
+        JSON
+      end
+      # Act - call the service
+      service.export(example_ccd_data.to_json, 'EmpTrib_MVP_1.0_Manc')
+
+      # Assert - ensure it has arrived in CCD
+      ccd_case = test_ccd_client.caseworker_search_latest_by_reference(example_ccd_data[:feeGroupReference], case_type_id: 'EmpTrib_MVP_1.0_Manc')
+      expect(ccd_case['case_fields']).to include 'feeGroupReference' => example_ccd_data[:feeGroupReference]
+    end
+
   end
 end
