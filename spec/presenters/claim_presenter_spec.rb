@@ -33,7 +33,7 @@ RSpec.describe ClaimPresenter do
     context 'with claimantIndType.claimant_gender' do
       it { is_expected.to present_ccd_field('claimantIndType.claimant_gender').using(:claim, primary_claimant_attrs: { gender: 'Male' }).with_result('Male') }
       it { is_expected.to present_ccd_field('claimantIndType.claimant_gender').using(:claim, primary_claimant_attrs: { gender: 'Female' }).with_result('Female') }
-      it { is_expected.to present_ccd_field('claimantIndType.claimant_gender').using(:claim, primary_claimant_attrs: { gender: 'N/K' }).with_result('N/K') }
+      it { is_expected.to present_ccd_field('claimantIndType.claimant_gender').using(:claim, primary_claimant_attrs: { gender: 'N/K' }).with_result('Not Known') }
       it { is_expected.to present_ccd_field('claimantIndType.claimant_gender').using(:claim, primary_claimant_attrs: { gender: 'Something Wrong' }).with_result(nil) }
       it { is_expected.to present_ccd_field('claimantIndType.claimant_gender').using(:claim, primary_claimant_attrs: { gender: nil }).with_result(nil) }
     end

@@ -78,7 +78,7 @@ GEM
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.8.0)
-    et_fake_ccd (0.1.11)
+    et_fake_ccd (0.1.12)
       activemodel (~> 5.2, >= 5.2.3)
       roda (~> 3.21)
       rotp (~> 5.1)
