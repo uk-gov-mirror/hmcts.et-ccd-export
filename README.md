@@ -83,6 +83,13 @@ The application must be configured to use the same redis details as the API serv
     CCD_DATA_STORE_BASE_URL=<ccd-data-store-api base URL>
 
     ```
+
+    If any of these urls use SSL and do not have valid certificates, switch off validation using
+
+    ```
+    CCD_SSL_VERIFICATION=false
+
+    ```
     
     Also, the 'jurisdiction id' (jid) can be changed from its default (EMPLOYMENT) as follows
     
