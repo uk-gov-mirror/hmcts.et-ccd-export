@@ -9,7 +9,7 @@ Sidekiq.configure_server do |config|
   redis_config = { url: redis_url }
   redis_config[:password] = ENV['REDIS_PASSWORD'] if ENV['REDIS_PASSWORD'].present?
   config.redis = redis_config
-  config.error_handlers.unshift CcdClientSentryErrorMiddleware
+  config.error_handlers.unshift CcdClientSentryErrorMiddleware.new
 end
 
 Sidekiq.configure_client do |config|
