@@ -58,6 +58,7 @@ json.set! 'data' do
         json.set! 'PostTown', claim.dig('primary_respondent', 'address', 'locality')
         json.set! 'County', claim.dig('primary_respondent', 'address', 'county')
         json.set! 'PostCode', claim.dig('primary_respondent', 'address', 'post_code')
+        json.set! 'Country', nil
       end
       json.set! 'claimant_work_phone_number', claim.dig('primary_respondent', 'address_telephone_number')
     end
@@ -72,6 +73,7 @@ json.set! 'data' do
           json.set! 'PostTown', respondent.dig('address', 'locality')
           json.set! 'County', respondent.dig('address', 'county')
           json.set! 'PostCode', respondent.dig('address', 'post_code')
+          json.set! 'Country', nil
         end
         json.set! 'respondent_phone1', respondent.dig('address_telephone_number')
         json.set! 'respondent_ACAS', respondent.dig('acas_certificate_number')

@@ -34,6 +34,7 @@ json.set! 'respondentSumType' do
     json.set! 'AddressLine2', claim.dig('primary_respondent', 'address', 'street')
     json.set! 'PostTown', claim.dig('primary_respondent', 'address', 'locality')
     json.set! 'County', claim.dig('primary_respondent', 'address', 'county')
+    json.set! 'Country', nil
     json.set! 'PostCode', claim.dig('primary_respondent', 'address', 'post_code')
   end
   json.set! 'respondent_phone1', claim.dig('primary_respondent', 'address_telephone_number')
@@ -50,6 +51,7 @@ json.set! 'respondentCollection' do
         json.set! 'AddressLine2', respondent.dig('address', 'street')
         json.set! 'PostTown', respondent.dig('address', 'locality')
         json.set! 'County', respondent.dig('address', 'county')
+        json.set! 'Country', nil
         json.set! 'PostCode', respondent.dig('address', 'post_code')
       end
       json.set! 'respondent_phone1', respondent.dig('address_telephone_number')
@@ -71,6 +73,7 @@ if claim.dig('primary_representative').present?
       json.set! 'AddressLine2', claim.dig('primary_representative', 'address', 'street')
       json.set! 'PostTown', claim.dig('primary_representative', 'address', 'locality')
       json.set! 'County', claim.dig('primary_representative', 'address', 'county')
+      json.set! 'Country', nil
       json.set! 'PostCode', claim.dig('primary_representative', 'address', 'post_code')
     end
     json.set! 'representative_phone_number', claim.dig('primary_representative', 'address_telephone_number')
