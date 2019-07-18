@@ -12,6 +12,7 @@ class ExportMultipleClaimsService
     case_type_id = export.dig('external_system', 'configurations').detect {|config| config['key'] == 'case_type_id'}['value']
     multiples_case_type_id = export.dig('external_system', 'configurations').detect {|config| config['key'] == 'multiples_case_type_id'}['value']
     batch.description = "Batch of multiple cases for reference #{export.dig('resource', 'reference')}"
+    batch.callback_queue = 'external_system_ccd_callbacks'
     batch.on :complete,
              Callback,
              primary_reference: export.dig('resource', 'reference'),
