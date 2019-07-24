@@ -1,3 +1,0 @@
-ssh -L 4501:idam-api.demo.platform.hmcts.net:443 -L 4502:rpe-service-auth-provider-demo.service.core-compute-demo.internal:80 -L 4452:ccd-data-store-api-demo.service.core-compute-demo.internal:443 gtaylor@reformMgmtDevBastion02
-
-sshuttle -r gtaylor@bastion.reform.hmcts.net 10.0.0.0/8 172.0.0.0/8 51.140.121.207/32 51.143.143.84/32
