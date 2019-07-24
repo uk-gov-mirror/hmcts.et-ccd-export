@@ -1,9 +1,9 @@
 class ExportMultipleClaimsService
-  def initialize(client: EtCcdClient::Client.new, presenter: MultipleClaimsPresenter, header_presenter: MultipleClaimsHeaderPresenter, envelope_presenter: MultipleClaimsEnvelopePresenter)
+  def initialize(client_class: EtCcdClient::Client, presenter: MultipleClaimsPresenter, header_presenter: MultipleClaimsHeaderPresenter, envelope_presenter: MultipleClaimsEnvelopePresenter)
     self.presenter = presenter
     self.header_presenter = header_presenter
     self.envelope_presenter = envelope_presenter
-    self.client = client
+    self.client_class = client_class
   end
 
   # Schedules a worker to send the pre compiled data (as the ccd data is smaller than the export data for each multiples case)
@@ -28,27 +28,29 @@ class ExportMultipleClaimsService
 
   # @param [String] data The JSON data to send to ccd as the details part of the payload
   def export(data, case_type_id)
-    client.login
-    resp = client.caseworker_start_case_creation(case_type_id: case_type_id)
-    event_token = resp['token']
-    data = envelope_presenter.present(data, event_token: event_token)
-    client.caseworker_case_create(data, case_type_id: case_type_id)
+    client_class.use do |client|
+      resp = client.caseworker_start_case_creation(case_type_id: case_type_id)
+      event_token = resp['token']
+      data = envelope_presenter.present(data, event_token: event_token)
+      client.caseworker_case_create(data, case_type_id: case_type_id)
+    end
   end
 
   # Export the header record (multiples case) to ccd
   # @param [String] primary_reference
   # @param [Array<String>] case_references
   def export_header(primary_reference, case_references, case_type_id)
-    client.login
-    resp = client.caseworker_start_bulk_creation(case_type_id: case_type_id)
-    event_token = resp['token']
-    data = header_presenter.present(primary_reference: primary_reference, case_references: case_references, event_token: event_token)
-    client.caseworker_case_create(data, case_type_id: case_type_id)
+    client_class.use do |client|
+      resp = client.caseworker_start_bulk_creation(case_type_id: case_type_id)
+      event_token = resp['token']
+      data = header_presenter.present(primary_reference: primary_reference, case_references: case_references, event_token: event_token)
+      client.caseworker_case_create(data, case_type_id: case_type_id)
+    end
   end
 
   private
 
-  attr_accessor :presenter, :header_presenter, :envelope_presenter, :client
+  attr_accessor :presenter, :header_presenter, :envelope_presenter, :client_class
   class Callback
     include Sidekiq::Worker
 

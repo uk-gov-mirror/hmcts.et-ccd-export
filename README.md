@@ -60,7 +60,18 @@ The application must be configured to use the same redis details as the API serv
    
    To re enable you must completely remove this env var
    
-5. Connecting to sentry is easy. Just set :-
+5. Controlling sidekiq threads
+   Increasing the number of threads available to sidekiq is a good and a bad thing.
+   It is good because more cases will go to CCD in parallel, but it is bad because
+   it might overload CCD.
+   
+   So, to control the threads (defaults to 20) - change this env var
+   
+   ```
+   RAILS_MAX_THREADS=<value>
+   ```
+   
+6. Connecting to sentry is easy. Just set :-
 
     ```
     RAVEN_DSN=<your sentry dsn>
@@ -72,7 +83,7 @@ The application must be configured to use the same redis details as the API serv
     RAVEN_SSL_VERIFICATION=false
     ```
     
-6. Configuration for CCD
+7. Configuration for CCD
 
     There are 3 base urls which have defaults to allow the system to work alongside ccd-docker.
     These will need configuring in real environments to point to a real CCD
@@ -116,6 +127,14 @@ The application must be configured to use the same redis details as the API serv
     ```
     CCD_SIDAM_USERNAME=<the username of the idam user to create cases for>
     CCD_SIDAM_PASSWORD=<the password for the above>
+    ```
+    
+    The CCD client uses a connection pool which is pre logged in.  This is for efficiency
+    To control the size of this pool, use the following
+    
+    ```
+    CCD_CLIENT_POOL_SIZE = <size> (where size should not be less than the concurrency in sidekiq else workers will become blocked)
+    CCD_CLIENT_POOL_TIMEOUT = <timeout seconds> Set this to the max amount of time the code should wait for a client from the pool to become available
     ```
 
 ## Running

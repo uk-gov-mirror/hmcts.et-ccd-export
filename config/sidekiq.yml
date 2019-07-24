@@ -6,6 +6,7 @@ staging:
 production:
   :concurrency: <%= ENV.fetch('RAILS_MAX_THREADS', '20').to_i - 2  %>
 :queues:
-  - external_system_ccd
-  - external_system_ccd_callbacks
-  - sidekiq_alive
+  - ["external_system_ccd", 5]
+  - ["external_system_ccd_callbacks", 4]
+  - ["sidekiq_alive", 3]
+  - ["external_system_ccd_multiples", 1]
