@@ -1,5 +1,6 @@
 json.set! 'data' do
   json.set! 'receiptDate', optional_date(claim.dig('date_of_receipt'))
+  json.set! 'ethosCaseReference', "caseRef0001_#{Time.now.strftime('%Y%m%d%H%M%S.%6N')}"
   json.set! 'feeGroupReference', claim.dig('reference')
   json.set! 'claimant_TypeOfClaimant', 'Individual'
   json.set! 'claimantIndType' do
@@ -32,6 +33,7 @@ json.set! 'data' do
       json.set! 'AddressLine2', claim.dig('primary_respondent', 'address', 'street')
       json.set! 'PostTown', claim.dig('primary_respondent', 'address', 'locality')
       json.set! 'County', claim.dig('primary_respondent', 'address', 'county')
+      json.set! 'Country', nil
       json.set! 'PostCode', claim.dig('primary_respondent', 'address', 'post_code')
     end
     json.set! 'respondent_phone1', claim.dig('primary_respondent', 'address_telephone_number')
@@ -45,6 +47,7 @@ json.set! 'data' do
         json.set! 'AddressLine2', claim.dig('primary_respondent', 'work_address', 'street')
         json.set! 'PostTown', claim.dig('primary_respondent', 'work_address', 'locality')
         json.set! 'County', claim.dig('primary_respondent', 'work_address', 'county')
+        json.set! 'Country',  nil
         json.set! 'PostCode', claim.dig('primary_respondent', 'work_address', 'post_code')
       end
       json.set! 'claimant_work_phone_number', claim.dig('primary_respondent', 'work_address_telephone_number')
@@ -55,6 +58,7 @@ json.set! 'data' do
         json.set! 'PostTown', claim.dig('primary_respondent', 'address', 'locality')
         json.set! 'County', claim.dig('primary_respondent', 'address', 'county')
         json.set! 'PostCode', claim.dig('primary_respondent', 'address', 'post_code')
+        json.set! 'Country', nil
       end
       json.set! 'claimant_work_phone_number', claim.dig('primary_respondent', 'address_telephone_number')
     end
@@ -69,6 +73,7 @@ json.set! 'data' do
           json.set! 'PostTown', respondent.dig('address', 'locality')
           json.set! 'County', respondent.dig('address', 'county')
           json.set! 'PostCode', respondent.dig('address', 'post_code')
+          json.set! 'Country', nil
         end
         json.set! 'respondent_phone1', respondent.dig('address_telephone_number')
         json.set! 'respondent_ACAS', respondent.dig('acas_certificate_number')
@@ -99,6 +104,7 @@ json.set! 'data' do
         json.set! 'AddressLine2', claim.dig('primary_representative', 'address', 'street')
         json.set! 'PostTown', claim.dig('primary_representative', 'address', 'locality')
         json.set! 'County', claim.dig('primary_representative', 'address', 'county')
+        json.set! 'Country', nil
         json.set! 'PostCode', claim.dig('primary_representative', 'address', 'post_code')
       end
       json.set! 'representative_phone_number', claim.dig('primary_representative', 'address_telephone_number')

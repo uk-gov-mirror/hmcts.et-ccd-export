@@ -2,9 +2,7 @@ require 'rails_helper'
 RSpec.describe "create claim" do
   subject(:worker) { ::EtExporter::ExportClaimWorker }
   let(:test_ccd_client) { EtCcdClient::UiClient.new.tap {|c| c.login(username: 'm@m.com', password: 'Pa55word11')} }
-  before do
-    stub_request(:any, /http:\/\/localhost:8080.*/).to_rack(EtFakeCcd::RootApp)
-  end
+  include_context 'with stubbed ccd'
 
   it 'creates a claim in ccd' do
     # Arrange - Produce the input JSON

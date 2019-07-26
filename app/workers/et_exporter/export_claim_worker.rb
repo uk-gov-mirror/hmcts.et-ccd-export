@@ -9,9 +9,13 @@ module EtExporter
       logger.debug "---------------------------------------------------------------------------------------------------------"
 
       parsed_json = JSON.parse(json)
-      logger.debug JSON.pretty_generate(parsed_json)
-      
-      ExportClaimService.new.call(parsed_json) unless ENV.fetch('ET_CCD_SIMULATION', 'false').downcase == 'true'
+      logger.debug JSON.generate(parsed_json)
+
+      if parsed_json.dig('resource', 'secondary_claimants').present?
+        ExportMultipleClaimsService.new.call(parsed_json) unless ENV.fetch('ET_CCD_SIMULATION', 'false').downcase == 'true'
+      else
+        ExportClaimService.new.call(parsed_json) unless ENV.fetch('ET_CCD_SIMULATION', 'false').downcase == 'true'
+      end
     end
   end
 end

@@ -1,3 +1,4 @@
+require_relative '../../lib/ccd_client_sentry_error_middleware'
 default_redis_host = ENV.fetch('REDIS_HOST', 'localhost')
 default_redis_port = ENV.fetch('REDIS_PORT', '6379')
 default_redis_database = ENV.fetch('REDIS_DATABASE', '1')
@@ -8,6 +9,7 @@ Sidekiq.configure_server do |config|
   redis_config = { url: redis_url }
   redis_config[:password] = ENV['REDIS_PASSWORD'] if ENV['REDIS_PASSWORD'].present?
   config.redis = redis_config
+  config.error_handlers.unshift CcdClientSentryErrorMiddleware.new
 end
 
 Sidekiq.configure_client do |config|
