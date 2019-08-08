@@ -10,8 +10,7 @@ class MultipleClaimsEnvelopePresenter
           },
           "event_token": "#{event_token}",
           "ignore_warning": false,
-          "draft_id": null,
-          "state": "Pending"
+          "draft_id": null
       }
 
     JSON
