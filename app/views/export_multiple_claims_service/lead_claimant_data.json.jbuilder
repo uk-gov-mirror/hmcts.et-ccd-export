@@ -1,6 +1,7 @@
 json.set! 'receiptDate', optional_date(claim.dig('date_of_receipt'))
 json.set! 'state', 'Pending'
-json.set! 'ethosCaseReference', "caseRef0001_#{Time.now.strftime('%Y%m%d%H%M%S.%6N')}"
+json.set! 'stateAPI', 'Pending'
+json.set! 'ethosCaseReference', "#{Time.now.strftime('%Y%m%d%H%M%S.%6N')}"
 json.set! 'feeGroupReference', claim.dig('reference')
 json.set! 'claimant_TypeOfClaimant', 'Individual'
 json.set! 'claimantIndType' do
@@ -113,3 +114,18 @@ if claim.dig('primary_representative').present?
     json.set! 'representative_dx', claim.dig('primary_representative', 'dx_number')
   end
 end
+json.set! "documentCollection" do
+  json.array!(files) do |file|
+    json.set! 'id', nil
+    json.set! 'value' do
+      json.set! 'typeOfDocument', file['document_type']
+      json.set! 'shortDescription', file['short_description']
+      json.set! 'uploadedDocument' do
+        json.set! 'document_url', file['document_url']
+        json.set! 'document_binary_url', file['document_binary_url']
+        json.set! 'document_filename', file['document_filename']
+      end
+    end
+  end
+end
+

@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'ice_nine'
 require 'securerandom'
 RSpec.describe ExportMultipleClaimsService do
-  subject(:service) { described_class.new presenter: mock_presenter, header_presenter: mock_header_presenter, envelope_presenter: mock_envelope_presenter }
+  subject(:service) { described_class.new presenter: mock_presenter, header_presenter: mock_header_presenter, envelope_presenter: mock_envelope_presenter, disallow_file_extensions: [] }
 
   let(:mock_presenter) { class_spy(MultipleClaimsPresenter, present: '{"some"=>"json", "claim" => "data"}') }
   let(:mock_header_presenter) do
@@ -123,7 +123,16 @@ RSpec.describe ExportMultipleClaimsService do
     end
 
     context 'with secondary claimants from csv file' do
+      include_context 'with stubbed ccd'
       include_context 'with mock workers'
+
+      before do
+        stub_request(:get, "http://dummy.com/examplepdf").
+          to_return(status: 200, body: File.new(File.absolute_path('../fixtures/chloe_goodwin.pdf', __dir__)), headers: { 'Content-Type' => 'application/pdf'})
+        stub_request(:get, "http://dummy.com/examplecsv").
+          to_return(status: 200, body: File.new(File.absolute_path('../fixtures/example.csv', __dir__)), headers: { 'Content-Type' => 'text/csv'})
+      end
+
       let(:example_export) { build(:export, :for_claim, claim_traits: [:default_multiple_claimants]) }
 
       it 'queues the header worker when done with the data from the header presenter' do
@@ -132,7 +141,7 @@ RSpec.describe ExportMultipleClaimsService do
         ::Sidekiq::Worker.drain_all
 
         # Assert - Check the batch
-        expect(mock_header_worker).to have_received(:perform).with(example_export.resource.reference, match_array((1000001..(1000001 + example_export.resource.secondary_claimants.length)).to_a.map(&:to_s)), 'CCD_Bulk_Action_Manc_v3')
+        expect(mock_header_worker).to have_received(:perform).with(example_export.resource.reference, match_array((1000001..(1000001 + example_export.resource.secondary_claimants.length)).to_a.map(&:to_s)), 'Manchester_Multiples_Dev')
       end
 
       it 'queues the worker 11 times with the data from the presenter' do
@@ -158,8 +167,8 @@ RSpec.describe ExportMultipleClaimsService do
 
         # Assert - Check the worker has been queued, first time with the primary set to true
         aggregate_failures 'validating calls' do
-          expect(mock_worker_calls.first).to eql(['{"claim"=>"1"}', 'EmpTrib_MVP_1.0_Manc', true])
-          expect(mock_worker_calls[1..-1]).to eql presented_values[1..-1].map {|data| [data, 'EmpTrib_MVP_1.0_Manc']}
+          expect(mock_worker_calls.first).to eql(['{"claim"=>"1"}', 'Manchester_Dev', true])
+          expect(mock_worker_calls[1..-1]).to eql presented_values[1..-1].map {|data| [data, 'Manchester_Dev']}
         end
       end
 
@@ -171,7 +180,7 @@ RSpec.describe ExportMultipleClaimsService do
         # Assert - Check the worker has been queued
         aggregate_failures "validate all calls in one" do
           expect(mock_presenter).to have_received(:present).exactly(example_export.resource.secondary_claimants.length + 1).times
-          expect(mock_presenter).to have_received(:present).with(example_export.resource.as_json, claimant: example_export.resource.primary_claimant.as_json, lead_claimant: true)
+          expect(mock_presenter).to have_received(:present).with(example_export.resource.as_json, claimant: example_export.resource.primary_claimant.as_json, files: an_instance_of(Array), lead_claimant: true)
           example_export.resource.secondary_claimants.each do |claimant|
             expect(mock_presenter).to have_received(:present).with(example_export.resource.as_json, claimant: claimant.as_json, lead_claimant: false)
           end
@@ -364,10 +373,10 @@ RSpec.describe ExportMultipleClaimsService do
         JSON
       end
       # Act - call the service
-      service.export(example_ccd_data.to_json, 'EmpTrib_MVP_1.0_Manc')
+      service.export(example_ccd_data.to_json, 'Manchester_Dev')
 
       # Assert - ensure it has arrived in CCD
-      ccd_case = test_ccd_client.caseworker_search_latest_by_reference(example_ccd_data[:feeGroupReference], case_type_id: 'EmpTrib_MVP_1.0_Manc')
+      ccd_case = test_ccd_client.caseworker_search_latest_by_reference(example_ccd_data[:feeGroupReference], case_type_id: 'Manchester_Dev')
       expect(ccd_case['case_fields']).to include 'feeGroupReference' => example_ccd_data[:feeGroupReference]
     end
 

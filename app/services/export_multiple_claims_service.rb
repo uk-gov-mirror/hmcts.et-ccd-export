@@ -1,9 +1,11 @@
 class ExportMultipleClaimsService
-  def initialize(client_class: EtCcdClient::Client, presenter: MultipleClaimsPresenter, header_presenter: MultipleClaimsHeaderPresenter, envelope_presenter: MultipleClaimsEnvelopePresenter)
+  include ClaimFiles
+  def initialize(client_class: EtCcdClient::Client, presenter: MultipleClaimsPresenter, header_presenter: MultipleClaimsHeaderPresenter, envelope_presenter: MultipleClaimsEnvelopePresenter, disallow_file_extensions: Rails.application.config.ccd_disallowed_file_extensions)
     self.presenter = presenter
     self.header_presenter = header_presenter
     self.envelope_presenter = envelope_presenter
     self.client_class = client_class
+    self.disallow_file_extensions = disallow_file_extensions
   end
 
   # Schedules a worker to send the pre compiled data (as the ccd data is smaller than the export data for each multiples case)
@@ -19,7 +21,9 @@ class ExportMultipleClaimsService
              header_worker: header_worker.name,
              multiples_case_type_id: multiples_case_type_id
     batch.jobs do
-      worker.perform_async presenter.present(export['resource'], claimant: export.dig('resource', 'primary_claimant'), lead_claimant: true), case_type_id, true
+      client_class.use do |client|
+        worker.perform_async presenter.present(export['resource'], claimant: export.dig('resource', 'primary_claimant'), files: files_data(client, export), lead_claimant: true), case_type_id, true
+      end
       export.dig('resource', 'secondary_claimants').each do |claimant|
         worker.perform_async presenter.present(export['resource'], claimant: claimant, lead_claimant: false), case_type_id
       end
@@ -50,7 +54,7 @@ class ExportMultipleClaimsService
 
   private
 
-  attr_accessor :presenter, :header_presenter, :envelope_presenter, :client_class
+  attr_accessor :presenter, :header_presenter, :envelope_presenter, :client_class, :disallow_file_extensions
   class Callback
     include Sidekiq::Worker
 
