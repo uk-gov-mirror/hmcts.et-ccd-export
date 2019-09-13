@@ -93,7 +93,7 @@ RSpec.describe ExportMultipleClaimsService do
           define_singleton_method(:new) { instance ||= super() }
           define_method :perform do |*args|
             calls << args
-            Sidekiq.redis { |r| r.lpush("BID-#{bid.bid}-references", reference) }
+            Sidekiq.redis { |r| r.lpush("BID-#{bid}-references", reference) }
             reference += 1
           end
         end
