@@ -137,11 +137,11 @@ RSpec.describe ExportMultipleClaimsService do
 
       it 'queues the header worker when done with the data from the header presenter' do
         # Act - Call the service
-        service.call(example_export.as_json, worker: mock_worker_class, header_worker: mock_header_worker_class)
-        ::Sidekiq::Worker.drain_all
+        service.call(example_export.as_json, worker: mock_worker_class, header_worker: mock_header_worker_class, jid: 'examplejid')
+        drain_all_our_sidekiq_jobs
 
         # Assert - Check the batch
-        expect(mock_header_worker).to have_received(:perform).with(example_export.resource.reference, example_export.resource.primary_respondent.name, match_array((1000001..(1000001 + example_export.resource.secondary_claimants.length)).to_a.map(&:to_s)), 'Manchester_Multiples_Dev')
+        expect(mock_header_worker).to have_received(:perform).with(example_export.resource.reference, example_export.resource.primary_respondent.name, match_array((1000001..(1000001 + example_export.resource.secondary_claimants.length)).to_a.map(&:to_s)), 'Manchester_Multiples_Dev', example_export.id)
       end
 
       it 'queues the worker 11 times with the data from the presenter' do
@@ -162,20 +162,20 @@ RSpec.describe ExportMultipleClaimsService do
         allow(mock_presenter).to receive(:present).and_return(*presented_values)
 
         # Act - Call the service
-        service.call(example_export.as_json, worker: mock_worker_class, header_worker: mock_header_worker_class)
-        ::Sidekiq::Worker.drain_all
+        service.call(example_export.as_json, worker: mock_worker_class, header_worker: mock_header_worker_class, jid: 'examplejid')
+        drain_all_our_sidekiq_jobs
 
         # Assert - Check the worker has been queued, first time with the primary set to true
         aggregate_failures 'validating calls' do
-          expect(mock_worker_calls.first).to eql(['{"claim"=>"1"}', 'Manchester_Dev', true])
-          expect(mock_worker_calls[1..-1]).to eql presented_values[1..-1].map {|data| [data, 'Manchester_Dev']}
+          expect(mock_worker_calls.first).to eql(['{"claim"=>"1"}', 'Manchester_Dev', example_export.id, 11, true])
+          expect(mock_worker_calls[1..-1]).to eql presented_values[1..-1].map {|data| [data, 'Manchester_Dev', example_export.id, 11]}
         end
       end
 
       it 'calls the presenter 11 times with the correct parameters' do
         # Act - Call the service
-        service.call(example_export.as_json, worker: mock_worker_class, header_worker: mock_header_worker_class)
-        ::Sidekiq::Worker.drain_all
+        service.call(example_export.as_json, worker: mock_worker_class, header_worker: mock_header_worker_class, jid: 'examplajid')
+        drain_all_our_sidekiq_jobs
 
         # Assert - Check the worker has been queued
         aggregate_failures "validate all calls in one" do
@@ -373,7 +373,7 @@ RSpec.describe ExportMultipleClaimsService do
         JSON
       end
       # Act - call the service
-      service.export(example_ccd_data.to_json, 'Manchester_Dev')
+      service.export(example_ccd_data.to_json, 'Manchester_Dev', jid: 'examplejid', bid: 'examplebid', export_id: 1, claimant_count: 10)
 
       # Assert - ensure it has arrived in CCD
       ccd_case = test_ccd_client.caseworker_search_latest_by_reference(example_ccd_data[:feeGroupReference], case_type_id: 'Manchester_Dev')
