@@ -9,32 +9,61 @@ module EtCcdExport
     class ExternalEvents
       include RSpec::Matchers
       def assert_claim_export_succeeded(export:, ccd_case:)
-        jobs = Sidekiq::Worker.jobs.select { |j| j['queue'] == 'events' && j['wrapped'] == 'TriggerEventJob' && j['args'].first['arguments'].first == 'ClaimExportSucceeded' }
+        jobs = ::Sidekiq::Worker.jobs.select do |j|
+          j['queue'] == 'events' && j['wrapped'] == 'TriggerEventJob' &&
+            j['args'].first['arguments'].first == 'ClaimExportFeedbackReceived' &&
+            JSON.parse(j['args'].first['arguments'][1]) >= { 'state' => 'complete', 'export_id' => export.id } &&
+            JSON.parse(j['args'].first['arguments'][1])['external_data'] >= { 'case_id' => ccd_case['id'],
+                                                                              'case_reference' => ccd_case['case_fields']['ethosCaseReference'],
+                                                                              'case_type_id' => 'Manchester_Dev' }
+        end
         expect(jobs.length).to be 1
-        parsed_job_data = JSON.parse(jobs.first['args'].first['arguments'][1])
-        expect(parsed_job_data).to include 'export_id' => export.id
-        expect(parsed_job_data['external_data']).to include 'case_id' => ccd_case['id'],
-                                                            'case_reference' => ccd_case['case_fields']['ethosCaseReference'],
-                                                            'case_type_id' => 'Manchester_Dev'
-
       end
 
       def assert_multiples_claim_export_succeeded(export:, ccd_case:)
-        jobs = Sidekiq::Worker.jobs.select { |j| j['queue'] == 'events' && j['wrapped'] == 'TriggerEventJob' && j['args'].first['arguments'].first == 'ClaimExportSucceeded' }
+        jobs = ::Sidekiq::Worker.jobs.select do |j|
+          j['queue'] == 'events' && j['wrapped'] == 'TriggerEventJob' &&
+            j['args'].first['arguments'].first == 'ClaimExportFeedbackReceived' &&
+            JSON.parse(j['args'].first['arguments'][1]) >= { 'export_id' => export.id, 'state' => 'complete', 'message' => 'Multiples claim exported' } &&
+            JSON.parse(j['args'].first['arguments'][1])['external_data'] >= {  'case_id' => ccd_case['id'],
+                                                                                        'case_reference' => ccd_case['case_fields']['multipleReference'],
+                                                                                        'case_type_id' => 'Manchester_Multiples_Dev' }
+        end
         expect(jobs.length).to be 1
-        parsed_job_data = JSON.parse(jobs.first['args'].first['arguments'][1])
-        expect(parsed_job_data).to include 'export_id' => export.id, 'message' => 'Multiples claim exported'
-        expect(parsed_job_data['external_data']).to include 'case_id' => ccd_case['id'],
-                                                            'case_reference' => ccd_case['case_fields']['multipleReference'],
-                                                            'case_type_id' => 'Manchester_Multiples_Dev'
-
-      end
+     end
 
       def assert_claim_export_started(export:)
-        jobs = Sidekiq::Worker.jobs.select do |j|
+        jobs = ::Sidekiq::Worker.jobs.select do |j|
           j['queue'] == 'events' && j['wrapped'] == 'TriggerEventJob' &&
             j['args'].first['arguments'].first == 'ClaimExportFeedbackReceived' &&
             JSON.parse(j['args'].first['arguments'][1]) >= {'state' => 'in_progress', 'export_id' => export.id, 'percent_complete' => 0, 'message' => 'Claim export started'}
+        end
+        expect(jobs.length).to be 1
+      end
+
+      def assert_multiples_claim_export_started(export:)
+        jobs = ::Sidekiq::Worker.jobs.select do |j|
+          j['queue'] == 'events' && j['wrapped'] == 'TriggerEventJob' &&
+            j['args'].first['arguments'].first == 'ClaimExportFeedbackReceived' &&
+            JSON.parse(j['args'].first['arguments'][1]) >= {'state' => 'in_progress', 'export_id' => export.id, 'percent_complete' => 0, 'message' => 'Multiples claim export started'}
+        end
+        expect(jobs.length).to be 1
+      end
+
+      def assert_claim_erroring(export:)
+        jobs = ::Sidekiq::Worker.jobs.select do |j|
+          j['queue'] == 'events' && j['wrapped'] == 'TriggerEventJob' &&
+            j['args'].first['arguments'].first == 'ClaimExportFeedbackReceived' &&
+            JSON.parse(j['args'].first['arguments'][1]) >= {'state' => 'erroring', 'export_id' => export.id, 'percent_complete' => nil, 'message' => 'Claim erroring'}
+        end
+        expect(jobs.length).to be 1
+      end
+
+      def assert_sub_claim_erroring(export:)
+        jobs = ::Sidekiq::Worker.jobs.select do |j|
+          j['queue'] == 'events' && j['wrapped'] == 'TriggerEventJob' &&
+            j['args'].first['arguments'].first == 'ClaimExportFeedbackReceived' &&
+            JSON.parse(j['args'].first['arguments'][1]) >= {'state' => 'erroring', 'export_id' => export.id, 'percent_complete' => nil, 'message' => 'Claim erroring due to subclaim error'}
         end
         expect(jobs.length).to be 1
       end
@@ -45,7 +74,7 @@ module EtCcdExport
         # The first would be the event that queues all 10 jobs and will contain the bid (batch id)
         # Therefore each sub claim should represent a percentage complete of (100 / 12) so after the 10th one is sent
         # the final 'complete' event will mark 100%
-        jobs = Sidekiq::Worker.jobs.select do |j|
+        jobs = ::Sidekiq::Worker.jobs.select do |j|
           j['queue'] == 'events' && j['wrapped'] == 'TriggerEventJob' &&
             j['args'].first['arguments'].first == 'ClaimExportFeedbackReceived' &&
             JSON.parse(j['args'].first['arguments'][1]) >= {'state' => 'in_progress', 'export_id' => export.id} &&

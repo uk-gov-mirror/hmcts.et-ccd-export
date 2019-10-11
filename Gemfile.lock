@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/hmcts/et-ccd-client-ruby.git
-  revision: 277d0634a7c84bab2eee78437a966f1119d324f9
-  tag: v0.1.51
+  revision: fd69389027a2196b35300396e615cf1792a3114a
+  tag: v0.1.53
   specs:
-    et_ccd_client (0.1.51)
+    et_ccd_client (0.1.53)
       addressable (~> 2.6)
       connection_pool (~> 2.2, >= 2.2.2)
       rest-client (~> 2.0, >= 2.0.2)
@@ -91,7 +91,7 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.9.0)
-    et_fake_ccd (0.1.30)
+    et_fake_ccd (0.1.35)
       activemodel (>= 5.2.3)
       iodine (~> 0.7)
       roda (~> 3.21)
@@ -109,7 +109,7 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (1.6.0)
+    i18n (1.7.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     iodine (0.7.34)
