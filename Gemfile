@@ -33,13 +33,13 @@ group :development, :test do
 end
 
 group :test do
-  gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
+  gem 'rspec-rails', '~> 3.9'
   gem 'factory_bot', '~> 5.0', '>= 5.0.2'
   gem 'jsonpath', '~> 1.0'
   gem 'et_fake_ccd', '~> 0.1'
   gem 'json_matchers', '~> 0.11.0'
   gem 'ice_nine', '~> 0.11.2'
-  gem 'mock_redis', '~> 0.21.0'
+  gem 'mock_redis', '~> 0.22'
 end
 
 group :development do
