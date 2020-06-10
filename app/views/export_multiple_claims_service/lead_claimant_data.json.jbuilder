@@ -1,7 +1,6 @@
 json.set! 'receiptDate', optional_date(claim.dig('date_of_receipt'))
 json.set! 'caseSource', 'ET1 Online'
-json.set! 'state', state
-json.set! 'stateAPI', state
+json.set! 'ethosCaseReference', ethos_case_reference
 json.set! 'feeGroupReference', claim.dig('reference')
 json.set! 'claimant_TypeOfClaimant', 'Individual'
 json.set! 'positionType', 'Received by Auto-Import'
@@ -26,7 +25,9 @@ json.set! 'claimantType' do
   json.set! 'claimant_email_address', claim.dig('primary_claimant', 'email_address')
   json.set! 'claimant_contact_preference', claim.dig('primary_claimant', 'contact_preference')&.humanize
 end
-json.set! 'caseType', 'Single'
+json.set! 'caseType', 'Multiple'
+json.set! 'multipleReference', multiple_reference
+json.set! 'leadClaimant1', 'Yes'
 json.set! 'claimantWorkAddress' do
   if claim.dig('primary_respondent', 'work_address').present?
     json.set! 'claimant_work_address' do
@@ -104,7 +105,6 @@ json.set! "documentCollection" do
     json.set! 'id', nil
     json.set! 'value' do
       json.set! 'typeOfDocument', file['document_type']
-      json.set! 'shortDescription', file['short_description']
       json.set! 'uploadedDocument' do
         json.set! 'document_url', file['document_url']
         json.set! 'document_binary_url', file['document_binary_url']

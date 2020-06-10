@@ -1,39 +1,47 @@
 class ExportMultipleClaimsService
   include ClaimFiles
-  def initialize(client_class: EtCcdClient::Client, presenter: MultipleClaimsPresenter, header_presenter: MultipleClaimsHeaderPresenter, envelope_presenter: MultipleClaimsEnvelopePresenter, disallow_file_extensions: Rails.application.config.ccd_disallowed_file_extensions)
+
+  def initialize(client_class: EtCcdClient::Client, presenter: MultipleClaimsPresenter,
+                 header_presenter: MultipleClaimsHeaderPresenter, envelope_presenter: MultipleClaimsEnvelopePresenter,
+                 reference_generator: EthosReferenceGeneratorService,
+                 disallow_file_extensions: Rails.application.config.ccd_disallowed_file_extensions)
     self.presenter = presenter
     self.header_presenter = header_presenter
     self.envelope_presenter = envelope_presenter
     self.client_class = client_class
     self.disallow_file_extensions = disallow_file_extensions
+    self.reference_generator = reference_generator
   end
 
   # Schedules a worker to send the pre compiled data (as the ccd data is smaller than the export data for each multiples case)
   # @param [Hash] export - The export hash containing the claim as well as export data
   def call(export, worker: ExportMultiplesWorker, header_worker: ExportMultiplesHeaderWorker, batch: Sidekiq::Batch.new, sidekiq_job_data:)
-    case_type_id = export.dig('external_system', 'configurations').detect {|config| config['key'] == 'case_type_id'}['value']
-    multiples_case_type_id = export.dig('external_system', 'configurations').detect {|config| config['key'] == 'multiples_case_type_id'}['value']
-    multiples_auto_accept = export.dig('external_system', 'configurations').detect {|config| config['key'] == 'multiples_auto_accept'}&.fetch('value')&.downcase == 'true'
-    state = multiples_auto_accept ? 'Accepted' : 'Pending'
-    claimant_count = export.dig('resource', 'secondary_claimants').length + 1
-    batch.description = "Batch of multiple cases for reference #{export.dig('resource', 'reference')}"
-    batch.callback_queue = 'external_system_ccd_callbacks'
-    batch.on :complete,
-             Callback,
-             primary_reference: export.dig('resource', 'reference'),
-             respondent_name: export.dig('resource', 'primary_respondent', 'name'),
-             header_worker: header_worker.name,
-             multiples_case_type_id: multiples_case_type_id,
-             export_id: export['id']
-    batch.jobs do
-      client_class.use do |client|
-        worker.perform_async presenter.present(export['resource'], claimant: export.dig('resource', 'primary_claimant'), files: files_data(client, export), lead_claimant: true, state: state), case_type_id, export['id'], claimant_count, true
+    case_type_id = export.dig('external_system', 'configurations').detect { |config| config['key'] == 'case_type_id' }['value']
+    multiples_case_type_id = export.dig('external_system', 'configurations').detect { |config| config['key'] == 'multiples_case_type_id' }['value']
+    claimant_count = export.dig('resource', 'secondary_claimants').length + 1#
+
+    client_class.use do |client|
+      start_multiple_result = client.start_multiple(case_type_id: case_type_id, quantity: claimant_count)
+      multiple_ref = start_multiple_result.dig('data', 'multipleRefNumber')
+      batch.description = "Batch of multiple cases for reference #{export.dig('resource', 'reference')}"
+      batch.callback_queue = 'external_system_ccd_callbacks'
+      batch.on :complete,
+               Callback,
+               primary_reference: multiple_ref,
+               respondent_name: export.dig('resource', 'primary_respondent', 'name'),
+               header_worker: header_worker.name,
+               multiples_case_type_id: multiples_case_type_id,
+               export_id: export['id']
+      batch.jobs do
+        next_ref = start_multiple_result.dig('data', 'startCaseRefNumber')
+        worker.perform_async presenter.present(export['resource'], claimant: export.dig('resource', 'primary_claimant'), files: files_data(client, export), lead_claimant: true, multiple_reference: multiple_ref, ethos_case_reference: next_ref), case_type_id, export['id'], claimant_count, true
+        export.dig('resource', 'secondary_claimants').each do |claimant|
+          next_ref = reference_generator.call(next_ref)
+          worker.perform_async presenter.present(export['resource'], claimant: claimant, lead_claimant: false, multiple_reference: multiple_ref, ethos_case_reference: next_ref), case_type_id, export['id'], claimant_count
+        end
       end
-      export.dig('resource', 'secondary_claimants').each do |claimant|
-        worker.perform_async presenter.present(export['resource'], claimant: claimant, lead_claimant: false, state: state), case_type_id, export['id'], claimant_count
-      end
+      batch.bid
     end
-    batch.bid
   end
 
   # @param [String] data The JSON data to send to ccd as the details part of the payload
@@ -68,11 +76,12 @@ class ExportMultipleClaimsService
 
   private
 
+  attr_accessor :presenter, :header_presenter, :envelope_presenter, :client_class, :reference_generator, :disallow_file_extensions
+
   def percent_complete_for(number, claimant_count:)
     (number * (100.0 / (claimant_count + 2))).to_i
   end
 
-  attr_accessor :presenter, :header_presenter, :envelope_presenter, :client_class, :disallow_file_extensions
   class Callback
     include Sidekiq::Worker
 

@@ -21,7 +21,7 @@ RSpec.describe "create claim multiples" do
     drain_all_our_sidekiq_jobs
 
     # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
-    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
+    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
     aggregate_failures 'validating key fields' do
       expect(ccd_case['case_fields']).to include 'bulkCaseTitle' => export.resource.primary_respondent.name
       case_references = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
@@ -39,7 +39,7 @@ RSpec.describe "create claim multiples" do
     drain_all_our_sidekiq_jobs
 
     # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
-    test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
+    test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
     external_events.assert_multiples_claim_export_started(export: export)
   end
 
@@ -52,7 +52,7 @@ RSpec.describe "create claim multiples" do
     drain_all_our_sidekiq_jobs
 
     # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
-    multiples_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
+    multiples_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
     external_events.assert_multiples_claim_export_succeeded(export: export, ccd_case: multiples_case)
   end
 
@@ -65,10 +65,10 @@ RSpec.describe "create claim multiples" do
     drain_all_our_sidekiq_jobs
 
     # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
-    multiples_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
+    multiples_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
     case_references = multiples_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
     sub_cases = case_references.map do |ref|
-      test_ccd_client.caseworker_search_latest_by_ethos_case_reference(ref, case_type_id: 'Manchester_Dev')
+      test_ccd_client.caseworker_search_latest_by_ethos_case_reference(ref, case_type_id: 'Manchester')
     end
     external_events.assert_all_multiples_claim_export_progress(export: export, ccd_case: multiples_case, sub_cases: sub_cases)
   end
@@ -91,46 +91,6 @@ RSpec.describe "create claim multiples" do
     external_events.assert_sub_claim_erroring(export: export)
   end
 
-  it 'creates many single claims all with status of Pending' do
-    # Arrange - Produce the input JSON
-    export = build(:export, :for_claim, claim_traits: [:default_multiple_claimants])
-
-    # Act - Call the worker in the same way the application would (minus using redis)
-    worker.perform_async(export.as_json.to_json)
-    drain_all_our_sidekiq_jobs
-
-    # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
-    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
-    case_references = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
-    aggregate_failures 'validating key fields' do
-      case_references.each do |ref|
-        created_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(ref, case_type_id: 'Manchester_Dev')
-        expect(created_case['case_fields']).to include 'state' => 'Pending', 'stateAPI' => 'Pending'
-      end
-    end
-  end
-
-  context 'with auto accept turned on' do
-    it 'creates many single claims all with status of Accepted' do
-      # Arrange - Produce the input JSON
-      export = build(:export, :for_claim, claim_traits: [:default_multiple_claimants], external_system: build(:system, :auto_accept_multiples))
-
-      # Act - Call the worker in the same way the application would (minus using redis)
-      worker.perform_async(export.as_json.to_json)
-      drain_all_our_sidekiq_jobs
-
-      # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
-      ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
-      case_references = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
-      aggregate_failures 'validating key fields' do
-        case_references.each do |ref|
-          created_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(ref, case_type_id: 'Manchester_Dev')
-          expect(created_case['case_fields']).to include 'state' => 'Accepted', 'stateAPI' => 'Accepted'
-        end
-      end
-    end
-  end
-
   it 'has the primary claimant first when the jobs are processed in order' do
     # Arrange - Produce the input JSON
     export = build(:export, :for_claim, claim_traits: [:default_multiple_claimants])
@@ -141,10 +101,10 @@ RSpec.describe "create claim multiples" do
 
     # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
     primary_claimant=export.resource.primary_claimant
-    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
+    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
     case_references = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
     aggregate_failures 'validating key fields' do
-      created_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(case_references.first, case_type_id: 'Manchester_Dev')
+      created_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(case_references.first, case_type_id: 'Manchester')
       expect(created_case['case_fields']).to include \
         'claimantIndType' => a_hash_including(
         'claimant_title1' => primary_claimant.title,
@@ -167,10 +127,10 @@ RSpec.describe "create claim multiples" do
 
     # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
     primary_claimant=export.resource.primary_claimant
-    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
+    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
     case_references = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
     aggregate_failures 'validating key fields' do
-      created_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(case_references.first, case_type_id: 'Manchester_Dev')
+      created_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(case_references.first, case_type_id: 'Manchester')
       expect(created_case['case_fields']).to include \
         'claimantIndType' => a_hash_including(
         'claimant_title1' => primary_claimant.title,
@@ -180,7 +140,7 @@ RSpec.describe "create claim multiples" do
     end
   end
 
-  it 'creates a lead claim in ccd that matches the schema' do
+  it 'creates a lead claim in ccd that matches the schema and is marked as the lead' do
     # Arrange - Produce the input JSON
     export = build(:export, :for_claim, claim_traits: [:default_multiple_claimants])
 
@@ -189,15 +149,16 @@ RSpec.describe "create claim multiples" do
     drain_all_our_sidekiq_jobs
 
     # Assert - Check with CCD (or fake CCD) to see what we sent
-    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
+    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
     case_reference = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }.first
     aggregate_failures 'validating against schema' do
-      lead_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(case_reference, case_type_id: 'Manchester_Dev')
+      lead_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(case_reference, case_type_id: 'Manchester')
       expect(lead_case['case_fields']).to match_json_schema('case_create')
+      expect(lead_case.dig('case_fields', 'leadClaimant1')).to eql 'Yes'
     end
   end
 
-  it 'creates a non lead claim in ccd that matches the schema' do
+  it 'creates a non lead claim in ccd that matches the schema and is not marked as the lead' do
     # Arrange - Produce the input JSON
     export = build(:export, :for_claim, claim_traits: [:default_multiple_claimants])
 
@@ -206,12 +167,28 @@ RSpec.describe "create claim multiples" do
     drain_all_our_sidekiq_jobs
 
     # Assert - Check with CCD (or fake CCD) to see what we sent
-    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
+    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
     case_reference = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }[1]
     aggregate_failures 'validating against schema' do
-      lead_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(case_reference, case_type_id: 'Manchester_Dev')
+      lead_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(case_reference, case_type_id: 'Manchester')
       expect(lead_case['case_fields']).to match_json_schema('case_create')
+      expect(lead_case.dig('case_fields', 'leadClaimant1')).to eql 'No'
     end
+  end
+
+  it 'populates the multipleReference in every case' do
+    # Arrange - Produce the input JSON
+    export = build(:export, :for_claim, claim_traits: [:default_multiple_claimants])
+
+    # Act - Call the worker in the same way the application would (minus using redis)
+    worker.perform_async(export.as_json.to_json)
+    drain_all_our_sidekiq_jobs
+
+    # Assert - Check with CCD (or fake CCD) to see what we sent
+    ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
+    case_references = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
+    cases = test_ccd_client.caseworker_search_by_multiple_reference(ccd_case.dig('case_fields', 'multipleReference'), case_type_id: 'Manchester')
+    expect(cases.length).to eql case_references.length
   end
 
   it 'fires the correct event before any jobs are started'
@@ -230,7 +207,7 @@ RSpec.describe "create claim multiples" do
   #   worker.drain
   #
   #   # Assert - Check with CCD (or fake CCD) to see what we sent
-  #   ccd_case = test_ccd_client.caseworker_search_latest_by_reference(export.resource.reference, case_type_id: 'Manchester_Dev')
+  #   ccd_case = test_ccd_client.caseworker_search_latest_by_reference(export.resource.reference, case_type_id: 'Manchester')
   #   ccd_claimant = ccd_case.dig('case_fields', 'claimantType')
   #   expect(ccd_claimant).to include "claimant_phone_number" => claimant.address_telephone_number,
   #                                   "claimant_mobile_number" => claimant.mobile_number,
@@ -258,7 +235,7 @@ RSpec.describe "create claim multiples" do
   #   worker.drain
   #
   #   # Assert - Check with CCD (or fake CCD) to see what we sent
-  #   ccd_case = test_ccd_client.caseworker_search_latest_by_reference(export.resource.reference, case_type_id: 'Manchester_Dev')
+  #   ccd_case = test_ccd_client.caseworker_search_latest_by_reference(export.resource.reference, case_type_id: 'Manchester')
   #   ccd_claimant = ccd_case.dig('case_fields', 'claimantType')
   #   expect(ccd_claimant).to include "claimant_phone_number" => claimant.address_telephone_number,
   #                                   "claimant_mobile_number" => claimant.mobile_number,
@@ -285,7 +262,7 @@ RSpec.describe "create claim multiples" do
   #   worker.drain
   #
   #   # Assert - Check with CCD (or fake CCD) to see what we sent
-  #   ccd_case = test_ccd_client.caseworker_search_latest_by_reference(export.resource.reference, case_type_id: 'Manchester_Dev')
+  #   ccd_case = test_ccd_client.caseworker_search_latest_by_reference(export.resource.reference, case_type_id: 'Manchester')
   #   ccd_claimant = ccd_case.dig('case_fields', 'claimantType')
   #   expect(ccd_claimant).to include "claimant_phone_number" => claimant.address_telephone_number,
   #                                   "claimant_mobile_number" => claimant.mobile_number,
@@ -311,17 +288,16 @@ RSpec.describe "create claim multiples" do
     drain_all_our_sidekiq_jobs
 
     # Assert - Check with CCD (or fake CCD) to see what we sent
-    header_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples_Dev')
+    header_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
     case_references = header_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
-    ccd_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(case_references.first, case_type_id: 'Manchester_Dev')
+    ccd_case = test_ccd_client.caseworker_search_latest_by_ethos_case_reference(case_references.first, case_type_id: 'Manchester')
 
     ccd_documents = ccd_case.dig('case_fields', 'documentCollection')
     expect(ccd_documents).to \
       contain_exactly \
         a_hash_including('id' => nil,
                          'value' => a_hash_including(
-                           'typeOfDocument' => 'Application',
-                           'shortDescription' => "ET1 application for #{claimant.first_name} #{claimant.last_name}",
+                           'typeOfDocument' => 'ET1',
                            'uploadedDocument' => a_hash_including(
                              'document_url' => an_instance_of(String),
                              'document_binary_url' => an_instance_of(String),
@@ -331,7 +307,6 @@ RSpec.describe "create claim multiples" do
         a_hash_including('id' => nil,
                          'value' => a_hash_including(
                            'typeOfDocument' => 'Other',
-                           'shortDescription' => "Additional claimants file for #{claimant.first_name} #{claimant.last_name}",
                            'uploadedDocument' => a_hash_including(
                              'document_url' => an_instance_of(String),
                              'document_binary_url' => an_instance_of(String),
@@ -340,8 +315,7 @@ RSpec.describe "create claim multiples" do
                          )),
         a_hash_including('id' => nil,
                          'value' => a_hash_including(
-                           'typeOfDocument' => 'Other',
-                           'shortDescription' => "ACAS certificate for #{respondent.name}",
+                           'typeOfDocument' => 'ACAS Certificate',
                            'uploadedDocument' => a_hash_including(
                              'document_url' => an_instance_of(String),
                              'document_binary_url' => an_instance_of(String),

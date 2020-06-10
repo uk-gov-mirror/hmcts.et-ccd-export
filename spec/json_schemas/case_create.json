@@ -860,21 +860,11 @@
               "title": "The type of document Schema",
               "default": "",
               "examples": [
-                "Application"
+                "ET1"
               ],
               "enum": [
-                "Application",
-                "Power of attorney",
-                "Claimant evidence",
-                "Respondent evidence",
-                "Other evidence",
-                "Initial assessment",
-                "Referral notice",
-                "Notification to repondent",
-                "Risk assessment",
-                "Correspondence",
-                "Index of checklist documents",
-                "Preliminary Hearing",
+                "ET1",
+                "ACAS Certificate",
                 "Other"
               ]
             },
@@ -983,22 +973,6 @@
       "examples": "ET1 Online",
       "enum": ["ET1 Online", "Manually Created"]
     },
-    "state": {
-      "type": "string",
-      "title": "The state of the case (optional)",
-      "examples": [
-        "Pending"
-      ],
-      "enum": ["Pending", "Accepted"]
-    },
-    "stateAPI": {
-      "type": "string",
-      "title": "The state of the case from an API perspective (optional)",
-      "examples": [
-        "Pending"
-      ],
-      "enum": ["Pending", "Accepted"]
-    },
     "feeGroupReference": {
       "type": "string",
       "title": "The fee group reference",
@@ -1030,6 +1004,26 @@
         "Multiple"
       ],
       "enum": ["Single", "Multiple"]
+    },
+    "multipleReference": {
+      "$id": "#/properties/data/properties/multipleReference",
+      "type": "string",
+      "title": "The reference of a multiple case that this case belongs to",
+      "default": "2100034/2019",
+      "examples": [
+        "2100034/2019"
+      ]
+    },
+    "leadClaimant1": {
+      "$id": "#/properties/data/properties/leadClaimant1",
+      "type": "string",
+      "title": "Indicates that this is the lead claimant of a multiple case",
+      "default": "No",
+      "examples": [
+        "Yes",
+        "No"
+      ],
+      "enum": ["Yes", "No"]
     },
     "claimantWorkAddress": {
       "oneOf": [

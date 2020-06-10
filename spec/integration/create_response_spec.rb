@@ -27,7 +27,7 @@ RSpec.describe "create response", type: :request do
   it 'updates the claim in ccd' do
     # Arrange - Produce a claim to respond to and Produce the input JSON
     claim_export = test_claim_export
-    ccd_claim_case = test_ccd_client.caseworker_search_latest_by_reference(claim_export.resource.reference, case_type_id: 'Manchester_Dev')
+    ccd_claim_case = test_ccd_client.caseworker_search_latest_by_reference(claim_export.resource.reference, case_type_id: 'Manchester')
     export = build(:export, :for_response, response_attrs: { case_number: ccd_claim_case.dig('case_fields', 'ethosCaseReference') })
     example_response = export.resource
 
@@ -37,7 +37,7 @@ RSpec.describe "create response", type: :request do
 
 
     # Assert - Check with CCD (or fake CCD) to see what we sent by finding the test claim and looking for its files
-    ccd_case = test_ccd_client.caseworker_search_latest_by_reference(claim_export.resource.reference, case_type_id: 'Manchester_Dev')
+    ccd_case = test_ccd_client.caseworker_search_latest_by_reference(claim_export.resource.reference, case_type_id: 'Manchester')
     ccd_documents = ccd_case.dig('case_fields', 'documentCollection')
     expect(ccd_documents).to \
       include \
@@ -56,7 +56,7 @@ RSpec.describe "create response", type: :request do
   it 'must not remove the existing file from the claim in ccd' do
     # Arrange - Produce a claim to respond to and Produce the input JSON
     claim_export = test_claim_export
-    ccd_claim_case = test_ccd_client.caseworker_search_latest_by_reference(claim_export.resource.reference, case_type_id: 'Manchester_Dev')
+    ccd_claim_case = test_ccd_client.caseworker_search_latest_by_reference(claim_export.resource.reference, case_type_id: 'Manchester')
     export = build(:export, :for_response, response_attrs: { case_number: ccd_claim_case.dig('case_fields', 'ethosCaseReference') })
     example_claimant = claim_export.resource.primary_claimant
 
@@ -66,14 +66,13 @@ RSpec.describe "create response", type: :request do
 
 
     # Assert - Check with CCD (or fake CCD) to see what we sent by finding the test claim and looking for its files
-    ccd_case = test_ccd_client.caseworker_search_latest_by_reference(claim_export.resource.reference, case_type_id: 'Manchester_Dev')
+    ccd_case = test_ccd_client.caseworker_search_latest_by_reference(claim_export.resource.reference, case_type_id: 'Manchester')
     ccd_documents = ccd_case.dig('case_fields', 'documentCollection')
     expect(ccd_documents).to \
       include \
         a_hash_including 'id' => nil,
       'value' => a_hash_including(
-        'typeOfDocument' => 'Application',
-        'shortDescription' => "ET1 application for #{example_claimant.first_name} #{example_claimant.last_name}",
+        'typeOfDocument' => 'ET1',
         'uploadedDocument' => a_hash_including(
           'document_url' => an_instance_of(String),
           'document_binary_url' => an_instance_of(String),
