@@ -10,7 +10,7 @@ json.data do
   end
 end
 json.event do
-  json.id "createBulkAction"
+  json.id "createMultiple"
   json.summary ""
   json.description ""
 end

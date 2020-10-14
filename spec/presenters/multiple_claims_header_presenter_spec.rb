@@ -66,7 +66,7 @@ RSpec.describe MultipleClaimsHeaderPresenter do
     result = JSON.parse(subject.present(primary_reference: example_primary_reference, respondent_name: example_respondent_name, case_references: example_case_references, event_token: example_event_token))
 
     # Assert
-    expect(result['event']).to include 'id' => 'createBulkAction',
+    expect(result['event']).to include 'id' => 'createMultiple',
                                        'summary' => instance_of(String),
                                        'description' => instance_of(String)
   end

@@ -27,7 +27,7 @@ module EtExporter
           data = {
             data: case_data,
             event: {
-              id: 'createBulkAction',
+              id: 'createMultiple',
               summary: '',
               description: ''
             },

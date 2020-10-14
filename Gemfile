@@ -25,7 +25,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'addressable', '~> 2.6'
 gem 'rest-client', '~> 2.1'
 gem 'jbuilder', '~> 2.9', '>= 2.9.1'
-gem 'et_ccd_client', git: 'https://github.com/hmcts/et-ccd-client-ruby.git', tag: 'v0.1.59'
+gem 'et_ccd_client', git: 'https://github.com/hmcts/et-ccd-client-ruby.git', tag: 'v0.2.0'
 gem 'dotenv-rails', '~> 2.7'
 
 group :development, :test do
@@ -37,7 +37,7 @@ group :test do
   gem 'rspec-rails', '~> 4.0'
   gem 'factory_bot', '~> 6.0'
   gem 'jsonpath', '~> 1.0'
-  gem 'et_fake_ccd', '~> 1.0'
+  gem 'et_fake_ccd', '~> 1.1'
   gem 'json_matchers', '~> 0.11.0'
   gem 'ice_nine', '~> 0.11.2'
   gem 'mock_redis', '~> 0.22'
