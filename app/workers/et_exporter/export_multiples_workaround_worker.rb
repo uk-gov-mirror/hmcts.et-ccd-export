@@ -10,7 +10,7 @@ module EtExporter
         respondent, multiple_ref, case_ref = row
         cases[multiple_ref] ||= {
           multipleReference: multiple_ref,
-          bulkCaseTitle: respondent,
+          multipleName: respondent,
           caseIdCollection: []
         }
         cases[multiple_ref][:caseIdCollection] << {
