@@ -35,12 +35,12 @@ RSpec.describe MultipleClaimsHeaderPresenter do
     expect(result.dig('data', 'multipleReference')).to eql example_primary_reference
   end
 
-  it 'presents the bulkCaseTitle' do
+  it 'presents the multipleName' do
     # Act
     result = JSON.parse(subject.present(primary_reference: example_primary_reference, respondent_name: example_respondent_name, case_references: example_case_references, event_token: example_event_token))
 
     # Assert
-    expect(result.dig('data', 'bulkCaseTitle')).to eql example_respondent_name
+    expect(result.dig('data', 'multipleName')).to eql example_respondent_name
   end
 
 
@@ -66,7 +66,7 @@ RSpec.describe MultipleClaimsHeaderPresenter do
     result = JSON.parse(subject.present(primary_reference: example_primary_reference, respondent_name: example_respondent_name, case_references: example_case_references, event_token: example_event_token))
 
     # Assert
-    expect(result['event']).to include 'id' => 'createBulkAction',
+    expect(result['event']).to include 'id' => 'createMultiple',
                                        'summary' => instance_of(String),
                                        'description' => instance_of(String)
   end

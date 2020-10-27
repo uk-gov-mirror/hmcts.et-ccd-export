@@ -23,7 +23,7 @@ RSpec.describe "create claim multiples" do
     # Assert - After calling all of our workers like sidekiq would, check with CCD (or fake CCD) to see what we sent
     ccd_case = test_ccd_client.caseworker_search_latest_by_bulk_case_title(export.resource.primary_respondent.name, case_type_id: 'Manchester_Multiples')
     aggregate_failures 'validating key fields' do
-      expect(ccd_case['case_fields']).to include 'bulkCaseTitle' => export.resource.primary_respondent.name
+      expect(ccd_case['case_fields']).to include 'multipleName' => export.resource.primary_respondent.name
       case_references = ccd_case.dig('case_fields', 'caseIdCollection').map { |obj| obj.dig('value', 'ethos_CaseReference') }
       expect(case_references.length).to eql(export.resource.secondary_claimants.length + 1)
       expect(case_references).to all be_an_instance_of(String)

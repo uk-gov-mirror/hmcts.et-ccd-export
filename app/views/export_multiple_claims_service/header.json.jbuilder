@@ -1,5 +1,5 @@
 json.data do
-  json.bulkCaseTitle respondent_name
+  json.multipleName respondent_name
   json.multipleSource 'ET1 Online'
   json.multipleReference primary_reference
   json.caseIdCollection(case_references) do |case_ref|
@@ -10,7 +10,7 @@ json.data do
   end
 end
 json.event do
-  json.id "createBulkAction"
+  json.id "createMultiple"
   json.summary ""
   json.description ""
 end
